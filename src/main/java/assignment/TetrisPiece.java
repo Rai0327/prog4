@@ -138,8 +138,6 @@ public final class TetrisPiece implements Piece {
             for (int j = 0; j < curr.getBody().length; j++) {
                 temp[temp.length - 1 - (int) curr.getBody()[j].getY()][(int) curr.getBody()[j].getX()] = 1;
             }
-            print(temp);
-            System.out.println(curr.getRotationIdx());
             curr = curr.prev;
             width = curr.getWidth();
             height = curr.getHeight();
