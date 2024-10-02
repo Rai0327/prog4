@@ -38,7 +38,7 @@ public final class TetrisPiece implements Piece {
         width = (int) type.getBoundingBox().getWidth();
         height = (int) type.getBoundingBox().getHeight();
         skirt = new int[width];
-        curr = new Node(body, width, height);
+        curr = new Node(body, width, height, rotationIdx);
         Node head = curr;
         for (int i = 0; i < numRotations; i++) {
             if (i == numRotations - 1) {
@@ -46,12 +46,13 @@ public final class TetrisPiece implements Piece {
             } else {
                 Point[] temp = new Point[body.length];
                 for (int j = 0; j < body.length; j++) {
-                    temp[j] = new Point((int) body[j].getY(), height - 1 - (int) body[j].getX());
+                    temp[j] = new Point((int) body[j].getY(), width - 1 - (int) body[j].getX());
                 }
-                curr.next = new Node(temp, height, width);
+                curr.next = new Node(temp, height, width, (curr.getRotationIdx() + 1) % numRotations);
             }
             curr.next.prev = curr;
             curr = curr.next;
+            body = curr.getBody();
         }
     }
 
@@ -73,7 +74,7 @@ public final class TetrisPiece implements Piece {
         curr = curr.next;
         width = curr.getWidth();
         height = curr.getHeight();
-        rotationIdx = (rotationIdx + 1) % numRotations;
+        rotationIdx = curr.getRotationIdx();
         return this;
     }
 
@@ -82,7 +83,7 @@ public final class TetrisPiece implements Piece {
         curr = curr.prev;
         width = curr.getWidth();
         height = curr.getHeight();
-        rotationIdx = (rotationIdx - 1) % numRotations;
+        rotationIdx = curr.getRotationIdx();
         return this;
     }
 
@@ -122,33 +123,31 @@ public final class TetrisPiece implements Piece {
 
     public void testRotations() {
         for (int i = 0; i < numRotations; i++) {
-            int[][] temp = new int[width][height];
+            int[][] temp = new int[height][width];
             for (int j = 0; j < curr.getBody().length; j++) {
-                temp[(int) curr.getBody()[j].getX()][(int) curr.getBody()[j].getY()] = 1;
+                temp[temp.length - 1 - (int) curr.getBody()[j].getY()][(int) curr.getBody()[j].getX()] = 1;
             }
             print(temp);
-            System.out.println(rotationIdx);
+            System.out.println(curr.getRotationIdx());
             curr = curr.next;
-            rotationIdx = (rotationIdx + 1) % numRotations;
             width = curr.getWidth();
             height = curr.getHeight();
         }
         for (int i = 0; i < numRotations; i++) {
             int[][] temp = new int[width][height];
             for (int j = 0; j < curr.getBody().length; j++) {
-                temp[(int) curr.getBody()[j].getX()][(int) curr.getBody()[j].getY()] = 1;
+                temp[temp.length - 1 - (int) curr.getBody()[j].getY()][(int) curr.getBody()[j].getX()] = 1;
             }
             print(temp);
-            System.out.println(rotationIdx);
+            System.out.println(curr.getRotationIdx());
             curr = curr.prev;
-            rotationIdx = (rotationIdx - 1) % numRotations;
             width = curr.getWidth();
             height = curr.getHeight();
         }
     }
 
     public void print(int[][] arr) {
-        for (int r = arr.length - 1; r >= 0; r--) {
+        for (int r = 0; r < arr.length; r++) {
             for (int c = 0; c < arr[r].length; c++) {
                 System.out.print(arr[r][c]);
             }
@@ -162,13 +161,15 @@ class Node {
     private Point[] body;
     private int width;
     private int height;
+    private int rotationIdx;
     Node next;
     Node prev;
 
-    public Node(Point[] body, int width, int height) {
+    public Node(Point[] body, int width, int height, int rotationIdx) {
         this.body = body;
         this.width = width;
         this.height = height;
+        this.rotationIdx = rotationIdx;
     }
 
     public Point[] getBody() {
@@ -193,5 +194,9 @@ class Node {
 
     public void setHeight(int height) {
         this.height = height;
+    }
+
+    public int getRotationIdx() {
+        return rotationIdx;
     }
 }

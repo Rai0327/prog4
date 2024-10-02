@@ -73,7 +73,7 @@ public class JTetris extends JComponent {
 
     public static void main(String[] args) {
         createGUI(new JTetris());
-        TetrisPiece p = new TetrisPiece(PieceType.T);
+        TetrisPiece p = new TetrisPiece(PieceType.SQUARE);
         p.testRotations();
     }
 
