@@ -9,54 +9,90 @@ import java.awt.*;
  */
 public final class TetrisBoard implements Board {
 
+    Piece[][] grid;
+
     // JTetris will use this constructor
-    public TetrisBoard(int width, int height) {}
+    public TetrisBoard(int width, int height) {
+        grid = new Piece[height][width];
+    }
 
     @Override
-    public Result move(Action act) { return Result.NO_PIECE; }
+    public Result move(Action act) {
+        return Result.NO_PIECE;
+    }
 
     @Override
-    public Board testMove(Action act) { return null; }
+    public Board testMove(Action act) {
+        return null;
+    }
 
     @Override
-    public Piece getCurrentPiece() { return null; }
+    public Piece getCurrentPiece() {
+        return null;
+    }
 
     @Override
-    public Point getCurrentPiecePosition() { return null; }
+    public Point getCurrentPiecePosition() {
+        return null;
+    }
 
     @Override
-    public void nextPiece(Piece p, Point spawnPosition) {}
+    public void nextPiece(Piece p, Point spawnPosition) {
+
+    }
 
     @Override
-    public boolean equals(Object other) { return false; }
+    public boolean equals(Object other) {
+        return false;
+    }
 
     @Override
-    public Result getLastResult() { return Result.NO_PIECE; }
+    public Result getLastResult() {
+        return Result.NO_PIECE;
+    }
 
     @Override
-    public Action getLastAction() { return Action.NOTHING; }
+    public Action getLastAction() {
+        return Action.NOTHING;
+    }
 
     @Override
-    public int getRowsCleared() { return -1; }
+    public int getRowsCleared() {
+        return -1;
+    }
 
     @Override
-    public int getWidth() { return -1; }
+    public int getWidth() {
+        return -1;
+    }
 
     @Override
-    public int getHeight() { return -1; }
+    public int getHeight() {
+        return -1;
+    }
 
     @Override
-    public int getMaxHeight() { return -1; }
+    public int getMaxHeight() {
+        return -1;
+    }
 
     @Override
-    public int dropHeight(Piece piece, int x) { return -1; }
+    public int dropHeight(Piece piece, int x) {
+        return -1;
+    }
 
     @Override
-    public int getColumnHeight(int x) { return -1; }
+    public int getColumnHeight(int x) {
+        return -1;
+    }
 
     @Override
-    public int getRowWidth(int y) { return -1; }
+    public int getRowWidth(int y) {
+        return -1;
+    }
 
     @Override
-    public Piece.PieceType getGrid(int x, int y) { return null; }
+    public Piece.PieceType getGrid(int x, int y) {
+        return null;
+    }
 }
