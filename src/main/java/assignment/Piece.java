@@ -88,18 +88,18 @@ public interface Piece {
 
     /**
      * Contains a list of 5 positions that should be checked for clockwise wall kicks of the J, L, S, T, and Z
-     * tetromonies, per the wall kick specification.  This list is indexed by the SOURCE rotation index (i.e., if you're
+     * tetromonies, per the wall kick specification. This list is indexed by the SOURCE rotation index (i.e., if you're
      * rotating O -> R, the source rotation index is 0).
      */
     Point[][] NORMAL_CLOCKWISE_WALL_KICKS = new Point[][] {
-        // 0->R 	( 0, 0) 	(-1, 0) 	(-1,+1) 	( 0,-2) 	(-1,-2)
-        new Point[] { new Point(0, 0), new Point(-1, 0), new Point(-1, 1), new Point(0, -2), new Point(-1, -2) },
-        // R->2 	( 0, 0) 	(+1, 0) 	(+1,-1) 	( 0,+2) 	(+1,+2)
-        new Point[] { new Point(0, 0), new Point(1, 0), new Point(1, -1), new Point(0, 2), new Point(1, 2) },
-        // 2->L 	( 0, 0) 	(+1, 0) 	(+1,+1) 	( 0,-2) 	(+1,-2)
-        new Point[] { new Point(0, 0), new Point(1, 0), new Point(1, 1), new Point(0, -2), new Point(1, -2) },
-        // L->0 	( 0, 0) 	(-1, 0) 	(-1,-1) 	( 0,+2) 	(-1,+2)
-        new Point[] { new Point(0, 0), new Point(-1, 0), new Point(-1, -1), new Point(0, 2), new Point(-1, 2) }
+            // 0->R ( 0, 0) (-1, 0) (-1,+1) ( 0,-2) (-1,-2)
+            new Point[] { new Point(0, 0), new Point(-1, 0), new Point(-1, 1), new Point(0, -2), new Point(-1, -2) },
+            // R->2 ( 0, 0) (+1, 0) (+1,-1) ( 0,+2) (+1,+2)
+            new Point[] { new Point(0, 0), new Point(1, 0), new Point(1, -1), new Point(0, 2), new Point(1, 2) },
+            // 2->L ( 0, 0) (+1, 0) (+1,+1) ( 0,-2) (+1,-2)
+            new Point[] { new Point(0, 0), new Point(1, 0), new Point(1, 1), new Point(0, -2), new Point(1, -2) },
+            // L->0 ( 0, 0) (-1, 0) (-1,-1) ( 0,+2) (-1,+2)
+            new Point[] { new Point(0, 0), new Point(-1, 0), new Point(-1, -1), new Point(0, 2), new Point(-1, 2) }
     };
 
     /**
@@ -108,14 +108,14 @@ public interface Piece {
      * rotation is O -> L, the source rotation index is 0).
      */
     Point[][] NORMAL_COUNTERCLOCKWISE_WALL_KICKS = new Point[][] {
-        // 0->L 	( 0, 0) 	(+1, 0) 	(+1,+1) 	( 0,-2) 	(+1,-2)
-        new Point[] { new Point(0, 0), new Point(1, 0), new Point(1, 1), new Point(0, -2), new Point(1, -2) },
-        // R->0 	( 0, 0) 	(+1, 0) 	(+1,-1) 	( 0,+2) 	(+1,+2)
-        new Point[] { new Point(0, 0), new Point(1, 0), new Point(-1, -1), new Point(0, 2), new Point(1, 2) },
-        // 2->R 	( 0, 0) 	(-1, 0) 	(-1,+1) 	( 0,-2) 	(-1,-2)
-        new Point[] { new Point(0, 0), new Point(-1, 0), new Point(-1, 1), new Point(0, -2),  new Point(-1, -2) },
-        // L->2 	( 0, 0) 	(-1, 0) 	(-1,-1) 	( 0,+2) 	(-1,+2)
-        new Point[] { new Point(0, 0), new Point(-1, 0), new Point(-1, -1), new Point(0, 2), new Point(-1, 2) },
+            // 0->L ( 0, 0) (+1, 0) (+1,+1) ( 0,-2) (+1,-2)
+            new Point[] { new Point(0, 0), new Point(1, 0), new Point(1, 1), new Point(0, -2), new Point(1, -2) },
+            // R->0 ( 0, 0) (+1, 0) (+1,-1) ( 0,+2) (+1,+2)
+            new Point[] { new Point(0, 0), new Point(1, 0), new Point(1, -1), new Point(0, 2), new Point(1, 2) },
+            // 2->R ( 0, 0) (-1, 0) (-1,+1) ( 0,-2) (-1,-2)
+            new Point[] { new Point(0, 0), new Point(-1, 0), new Point(-1, 1), new Point(0, -2), new Point(-1, -2) },
+            // L->2 ( 0, 0) (-1, 0) (-1,-1) ( 0,+2) (-1,+2)
+            new Point[] { new Point(0, 0), new Point(-1, 0), new Point(-1, -1), new Point(0, 2), new Point(-1, 2) },
     };
 
     /**
@@ -124,14 +124,14 @@ public interface Piece {
      * source rotation index is 0).
      */
     Point[][] I_CLOCKWISE_WALL_KICKS = new Point[][] {
-        // 0->R 	( 0, 0) 	(-2, 0) 	(+1, 0) 	(-2,-1) 	(+1,+2)
-        new Point[] { new Point(0, 0), new Point(-2, 0), new Point(1, 0), new Point(-2, -1), new Point(1, 2) },
-        // R->2 	( 0, 0) 	(-1, 0) 	(+2, 0) 	(-1,+2) 	(+2,-1)
-        new Point[] { new Point(0, 0), new Point(-1, 0), new Point(2, 0), new Point(-1, 2), new Point(2, 1) },
-        // 2->L 	( 0, 0) 	(+2, 0) 	(-1, 0) 	(+2,+1) 	(-1,-2)
-        new Point[] { new Point(0, 0), new Point(2, 0), new Point(-1, 0), new Point(2, 1), new Point(-1, -2) },
-        // L->0 	( 0, 0) 	(+1, 0) 	(-2, 0) 	(+1,-2) 	(-2,+1)
-        new Point[] { new Point(0, 0), new Point(1, 0), new Point(-2, 0), new Point(1, -2), new Point(-2, 1) }
+            // 0->R ( 0, 0) (-2, 0) (+1, 0) (-2,-1) (+1,+2)
+            new Point[] { new Point(0, 0), new Point(-2, 0), new Point(1, 0), new Point(-2, -1), new Point(1, 2) },
+            // R->2 ( 0, 0) (-1, 0) (+2, 0) (-1,+2) (+2,-1)
+            new Point[] { new Point(0, 0), new Point(-1, 0), new Point(2, 0), new Point(-1, 2), new Point(2, -1) },
+            // 2->L ( 0, 0) (+2, 0) (-1, 0) (+2,+1) (-1,-2)
+            new Point[] { new Point(0, 0), new Point(2, 0), new Point(-1, 0), new Point(2, 1), new Point(-1, -2) },
+            // L->0 ( 0, 0) (+1, 0) (-2, 0) (+1,-2) (-2,+1)
+            new Point[] { new Point(0, 0), new Point(1, 0), new Point(-2, 0), new Point(1, -2), new Point(-2, 1) }
     };
 
     /**
@@ -140,14 +140,14 @@ public interface Piece {
      * L, the source rotation index is 0).
      */
     Point[][] I_COUNTERCLOCKWISE_WALL_KICKS = new Point[][] {
-        // 0->L 	( 0, 0) 	(-1, 0) 	(+2, 0) 	(-1,+2) 	(+2,-1)
-        new Point[] { new Point(0, 0), new Point(-1, 0), new Point(2, 0), new Point(-1, 2), new Point(2, 1) },
-        // R->0 	( 0, 0) 	(+2, 0) 	(-1, 0) 	(+2,+1) 	(-1,-2)
-        new Point[] { new Point(0, 0), new Point(2, 0), new Point(-1, 0), new Point(2, 1), new Point(-1, -2) },
-        // 2->R 	( 0, 0) 	(+1, 0) 	(-2, 0) 	(+1,-2) 	(-2,+1)
-        new Point[] { new Point(0, 0), new Point(1, 0), new Point(-2, 0), new Point(1, -2), new Point(-2, 1) },
-        // L->2 	( 0, 0) 	(-2, 0) 	(+1, 0) 	(-2,-1) 	(+1,+2)
-        new Point[] { new Point(0, 0), new Point(-2, 0), new Point(1, 0), new Point(-2, -1), new Point(1, 2) }
+            // 0->L ( 0, 0) (-1, 0) (+2, 0) (-1,+2) (+2,-1)
+            new Point[] { new Point(0, 0), new Point(-1, 0), new Point(2, 0), new Point(-1, 2), new Point(2, -1) },
+            // R->0 ( 0, 0) (+2, 0) (-1, 0) (+2,+1) (-1,-2)
+            new Point[] { new Point(0, 0), new Point(2, 0), new Point(-1, 0), new Point(2, 1), new Point(-1, -2) },
+            // 2->R ( 0, 0) (+1, 0) (-2, 0) (+1,-2) (-2,+1)
+            new Point[] { new Point(0, 0), new Point(1, 0), new Point(-2, 0), new Point(1, -2), new Point(-2, 1) },
+            // L->2 ( 0, 0) (-2, 0) (+1, 0) (-2,-1) (+1,+2)
+            new Point[] { new Point(0, 0), new Point(-2, 0), new Point(1, 0), new Point(-2, -1), new Point(1, 2) }
     };
 
     /**
