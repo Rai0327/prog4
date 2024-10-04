@@ -12,7 +12,6 @@ public final class TetrisBoard implements Board {
 
     private Piece.PieceType[][] grid;
     private Piece currPiece;
-    private Piece nextPiece;
     private Point position;
     private Result lastResult;
     private Action lastAction;
@@ -46,7 +45,7 @@ public final class TetrisBoard implements Board {
             case DOWN:
                 int[] currSkirt = currPiece.getSkirt();
                 for(int i = 0; i < currSkirt.length; i++) {
-                    if(grid[(int) (position.getX() + i)][(int) position.getY() + currSkirt[i] - 1] != null) {
+                    if(currSkirt[i] != Integer.MAX_VALUE && grid[(int) position.getY() + currSkirt[i] - 1][(int) (position.getX() + i)] != null) {
                         return (lastResult = Result.OUT_BOUNDS);
                     }
                 }
@@ -56,9 +55,9 @@ public final class TetrisBoard implements Board {
                 currSkirt = currPiece.getSkirt();
                 boolean empty = true;
                 while (empty) {
+                    position.setLocation(position.getX(), position.getY() - 1);
                     for (int i = 0; i < currSkirt.length; i++) {
-                        position.setLocation(position.getX(), position.getY() - 1);
-                        if (grid[(int) position.getX() + i][(int) position.getY() + currSkirt[i]] != null) {
+                        if (currSkirt[i] != Integer.MAX_VALUE && grid[(int) position.getY() + currSkirt[i]][(int) position.getX() + i] != null) {
                             empty = false;
                         }
                     }
@@ -66,7 +65,7 @@ public final class TetrisBoard implements Board {
                 position.setLocation(position.getX(), position.getY() + 1);
                 Point[] body = currPiece.getBody();
                 for (Point p : body) {
-                    grid[(int) (position.getX() + p.getX())][(int) (position.getY() + p.getY())] = currPiece.getType();
+                    grid[(int) (position.getY() + p.getY())][(int) (position.getX() + p.getX())] = currPiece.getType();
                 }
                 return (lastResult = Result.PLACE);
             case CLOCKWISE:
@@ -105,7 +104,8 @@ public final class TetrisBoard implements Board {
 
     @Override
     public void nextPiece(Piece p, Point spawnPosition) {
-        nextPiece = p;
+        currPiece = p;
+        position = spawnPosition;
     }
 
     @Override
@@ -181,7 +181,7 @@ public final class TetrisBoard implements Board {
 
     private boolean collision() {
         for (Point i : currPiece.getBody()) {
-            if (grid[(int) (i.getX() + position.getX())][(int) (i.getY() + position.getY())] != null) {
+            if (grid[(int) (i.getY() + position.getY())][(int) (i.getX() + position.getX())] != null) {
                 return true;
             }
         }
