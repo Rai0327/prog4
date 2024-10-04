@@ -1,6 +1,7 @@
 package assignment;
 
 import java.awt.*;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 /**
@@ -37,7 +38,6 @@ public final class TetrisPiece implements Piece {
         body = type.getSpawnBody();
         width = (int) type.getBoundingBox().getWidth();
         height = (int) type.getBoundingBox().getHeight();
-        skirt = new int[width];
         curr = new Node(body, width, height, rotationIdx);
         Node head = curr;
         for (int i = 0; i < numRotations; i++) {
@@ -54,6 +54,7 @@ public final class TetrisPiece implements Piece {
             curr = curr.next;
             body = curr.getBody();
         }
+        skirt = curr.getSkirt();
     }
 
     @Override
@@ -75,6 +76,7 @@ public final class TetrisPiece implements Piece {
         width = curr.getWidth();
         height = curr.getHeight();
         rotationIdx = curr.getRotationIdx();
+        skirt = curr.getSkirt();
         return this;
     }
 
@@ -84,6 +86,7 @@ public final class TetrisPiece implements Piece {
         width = curr.getWidth();
         height = curr.getHeight();
         rotationIdx = curr.getRotationIdx();
+        skirt = curr.getSkirt();
         return this;
     }
 
@@ -160,6 +163,7 @@ class Node {
     private int width;
     private int height;
     private int rotationIdx;
+    private int[] skirt;
     Node next;
     Node prev;
 
@@ -168,33 +172,35 @@ class Node {
         this.width = width;
         this.height = height;
         this.rotationIdx = rotationIdx;
+        skirt = new int[width];
+        for (int i = 0; i < width; i++) {
+            skirt[i] = Integer.MAX_VALUE;
+        }
+        for (Point p : body) {
+            if (p.getY() < skirt[(int) p.getX()]) {
+                skirt[(int) p.getX()] = (int) p.getY();
+            }
+        }
+
     }
 
     public Point[] getBody() {
         return body;
     }
 
-    public void setBody(Point[] body) {
-        this.body = body;
-    }
-
     public int getWidth() {
         return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
     }
 
     public int getHeight() {
         return height;
     }
 
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
     public int getRotationIdx() {
         return rotationIdx;
+    }
+
+    public int[] getSkirt() {
+        return skirt;
     }
 }

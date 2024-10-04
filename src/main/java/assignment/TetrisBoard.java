@@ -1,6 +1,7 @@
 package assignment;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * Represents a Tetris board -- essentially a 2D grid of piece types (or nulls). Supports
@@ -12,22 +13,79 @@ public final class TetrisBoard implements Board {
     private Piece.PieceType[][] grid;
     private Piece currPiece;
     private Piece nextPiece;
+    private Point position;
+    private Result lastResult;
+    private Action lastAction;
 
     // JTetris will use this constructor
     public TetrisBoard(int width, int height) {
         grid = new Piece.PieceType[height][width];
         Piece.PieceType[] pieceTypes = {Piece.PieceType.T, Piece.PieceType.SQUARE, Piece.PieceType.STICK, Piece.PieceType.LEFT_L, Piece.PieceType.RIGHT_L, Piece.PieceType.LEFT_DOG, Piece.PieceType.RIGHT_DOG};
         currPiece = new TetrisPiece(pieceTypes[(int) (Math.random() * pieceTypes.length)]);
+        position = new Point((grid[0].length - currPiece.getWidth()) / 2, grid.length - currPiece.getHeight());
     }
 
     @Override
     public Result move(Action act) {
+        lastAction = act;
         switch(act) {
             case LEFT:
-
+                position.setLocation((int) (position.getX() - 1), (int) (position.getY()));
+                if (position.getX() < 0 && collision()) {
+                    position.setLocation((int) (position.getX() + 1), (int) position.getY());
+                    return (lastResult = Result.OUT_BOUNDS);
+                }
+                return (lastResult = Result.SUCCESS);
+            case RIGHT:
+                position.setLocation((int) (position.getX() + 1), (int) (position.getY()));
+                if (position.getX() >= grid[0].length && collision()) {
+                    position.setLocation((int) (position.getX() - 1), (int) position.getY());
+                    return (lastResult = Result.OUT_BOUNDS);
+                }
+                return (lastResult = Result.SUCCESS);
+            case DOWN:
+                int[] currSkirt = currPiece.getSkirt();
+                for(int i = 0; i < currSkirt.length; i++) {
+                    if(grid[(int) (position.getX() + i)][(int) position.getY() + currSkirt[i] - 1] != null) {
+                        return (lastResult = Result.OUT_BOUNDS);
+                    }
+                }
+                position.setLocation((int) position.getX(), (int) (position.getY() - 1));
+                return (lastResult = Result.SUCCESS);
+            case DROP:
+                currSkirt = currPiece.getSkirt();
+                boolean empty = true;
+                while (empty) {
+                    for (int i = 0; i < currSkirt.length; i++) {
+                        position.setLocation(position.getX(), position.getY() - 1);
+                        if (grid[(int) position.getX() + i][(int) position.getY() + currSkirt[i]] != null) {
+                            empty = false;
+                        }
+                    }
+                }
+                position.setLocation(position.getX(), position.getY() + 1);
+                Point[] body = currPiece.getBody();
+                for (Point p : body) {
+                    grid[(int) (position.getX() + p.getX())][(int) (position.getY() + p.getY())] = currPiece.getType();
+                }
+                return (lastResult = Result.PLACE);
+            case CLOCKWISE:
+                Point[][] wallKicks = Piece.NORMAL_CLOCKWISE_WALL_KICKS;
+                if (currPiece.getType() == Piece.PieceType.STICK) {
+                    wallKicks = Piece.I_CLOCKWISE_WALL_KICKS;
+                }
+                return (lastResult = rotate(wallKicks, currPiece.clockwisePiece(), currPiece));
+            case COUNTERCLOCKWISE:
+                wallKicks = Piece.NORMAL_COUNTERCLOCKWISE_WALL_KICKS;
+                if (currPiece.getType() == Piece.PieceType.STICK) {
+                    wallKicks = Piece.I_COUNTERCLOCKWISE_WALL_KICKS;
+                }
+                return (lastResult = rotate(wallKicks, currPiece.counterclockwisePiece(), currPiece));
+            case NOTHING:
+                return (lastResult = Result.SUCCESS);
+            default:
+                return (lastResult = Result.NO_PIECE);
         }
-
-        return Result.NO_PIECE;
     }
 
     @Override
@@ -42,7 +100,7 @@ public final class TetrisBoard implements Board {
 
     @Override
     public Point getCurrentPiecePosition() {
-        return null;
+        return position;
     }
 
     @Override
@@ -52,17 +110,27 @@ public final class TetrisBoard implements Board {
 
     @Override
     public boolean equals(Object other) {
-        return false;
+        if (!(other instanceof TetrisBoard)) {
+            return false;
+        }
+        for (int r = 0; r < grid.length; r++) {
+            for (int c = 0; c < grid[r].length; c++) {
+                if (grid[grid.length - 1 - r][c] != ((TetrisBoard) other).getGrid(c, r)) {
+                    return false;
+                }
+            }
+        }
+        return currPiece.equals(((TetrisBoard) other).getCurrentPiece()) && position.equals(((TetrisBoard) other).getCurrentPiecePosition());
     }
 
     @Override
     public Result getLastResult() {
-        return Result.NO_PIECE;
+        return lastResult;
     }
 
     @Override
     public Action getLastAction() {
-        return Action.NOTHING;
+        return lastAction;
     }
 
     @Override
@@ -109,5 +177,34 @@ public final class TetrisBoard implements Board {
     @Override
     public Piece.PieceType getGrid(int x, int y) {
         return grid[grid.length - 1 - y][x];
+    }
+
+    private boolean collision() {
+        for (Point i : currPiece.getBody()) {
+            if (grid[(int) (i.getX() + position.getX())][(int) (i.getY() + position.getY())] != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Result rotate(Point[][] wallKicks, Piece rotatedPiece, Piece storedPiece) {
+        Point storePosition = position;
+        currPiece = rotatedPiece;
+        for (int i = 0; i < wallKicks[currPiece.getRotationIndex()].length; i++) {
+            if (!collision()) {
+                break;
+            }
+            int wallKickX = (int) wallKicks[currPiece.getRotationIndex()][i].getX();
+            int wallKickY = (int) wallKicks[currPiece.getRotationIndex()][i].getY();
+            position.setLocation(position.getX() + wallKickX, position.getY() + wallKickY);
+        }
+        if (collision()) {
+            currPiece = storedPiece;
+            position = storePosition;
+            return Result.OUT_BOUNDS;
+        } else {
+            return Result.SUCCESS;
+        }
     }
 }
