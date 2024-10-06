@@ -26,14 +26,14 @@ public final class TetrisBoard implements Board {
         switch(act) {
             case LEFT:
                 position.setLocation((int) (position.getX() - 1), (int) (position.getY()));
-                if (position.getX() < 0 || collision()) {
+                if (collision()) {
                     position.setLocation((int) (position.getX() + 1), (int) position.getY());
                     return (lastResult = Result.OUT_BOUNDS);
                 }
                 return (lastResult = Result.SUCCESS);
             case RIGHT:
                 position.setLocation((int) (position.getX() + 1), (int) (position.getY()));
-                if (position.getX() + currPiece.getWidth() - 1 >= grid[0].length || collision()) {
+                if (collision()) {
                     position.setLocation((int) (position.getX() - 1), (int) position.getY());
                     return (lastResult = Result.OUT_BOUNDS);
                 }
@@ -170,7 +170,7 @@ public final class TetrisBoard implements Board {
 
     private boolean collision() {
         for (Point i : currPiece.getBody()) {
-            if (grid[(int) (i.getY() + position.getY())][(int) (i.getX() + position.getX())] != null) {
+            if ((int) (i.getX() + position.getX()) < 0 || (int) (i.getX() + position.getX()) > grid[0].length - 1 || grid[grid.length - 1 - (int) (i.getY() + position.getY())][(int) (i.getX() + position.getX())] != null) {
                 return true;
             }
         }

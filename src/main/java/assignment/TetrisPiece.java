@@ -73,6 +73,7 @@ public final class TetrisPiece implements Piece {
     public Piece clockwisePiece() {
         // TODO: Implement me.
         curr = curr.next;
+        body = curr.getBody();
         width = curr.getWidth();
         height = curr.getHeight();
         rotationIdx = curr.getRotationIdx();
@@ -83,6 +84,7 @@ public final class TetrisPiece implements Piece {
     @Override
     public Piece counterclockwisePiece() {
         curr = curr.prev;
+        body = curr.getBody();
         width = curr.getWidth();
         height = curr.getHeight();
         rotationIdx = curr.getRotationIdx();
