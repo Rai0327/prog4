@@ -1,7 +1,6 @@
 package assignment;
 
 import java.awt.*;
-import java.util.ArrayList;
 
 /**
  * Represents a Tetris board -- essentially a 2D grid of piece types (or nulls). Supports
@@ -42,13 +41,13 @@ public final class TetrisBoard implements Board {
             case DOWN:
                 int[] currSkirt = currPiece.getSkirt();
                 for (int i = 0; i < currSkirt.length; i++) {
-                    if (currSkirt[i] != Integer.MAX_VALUE && currSkirt[i] != Integer.MIN_VALUE && ((int) position.getY() + currSkirt[i] - 1 < 0 || grid[grid.length - 1 - (int) position.getY() + currSkirt[i] - 1][(int) (position.getX() + i)] != null)) {
+                    if (currSkirt[i] != Integer.MAX_VALUE && currSkirt[i] != Integer.MIN_VALUE && ((int) position.getY() + currSkirt[i] - 1 < 0 || grid[grid.length - 1 - ((int) position.getY() + currSkirt[i] - 1)][(int) (position.getX() + i)] != null)) {
                         for (Point p : currPiece.getBody()) {
                             grid[grid.length - 1 - (int) (position.getY() + p.getY())][(int) (position.getX() + p.getX())] = currPiece.getType();
                         }
                         return (lastResult = Result.PLACE);
                     }
-                    System.out.println(grid[(int) position.getY() + currSkirt[i] - 1][(int) (position.getX() + i)]);
+                    //System.out.println(grid[(int) position.getY() + currSkirt[i] - 1][(int) (position.getX() + i)]);
                 }
                 position.setLocation((int) position.getX(), (int) (position.getY() - 1));
                 return (lastResult = Result.SUCCESS);
