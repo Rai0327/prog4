@@ -73,8 +73,6 @@ public class JTetris extends JComponent {
 
     public static void main(String[] args) {
         createGUI(new JTetris());
-        TetrisPiece p = new TetrisPiece(PieceType.LEFT_L);
-        p.testRotations();
     }
 
     // Is drawing optimized

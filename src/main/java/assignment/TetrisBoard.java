@@ -45,9 +45,15 @@ public final class TetrisBoard implements Board {
                         for (Point p : currPiece.getBody()) {
                             grid[grid.length - 1 - (int) (position.getY() + p.getY())][(int) (position.getX() + p.getX())] = currPiece.getType();
                         }
+                        while (currPiece.getRotationIndex() != 0) {
+                            if (currPiece.getRotationIndex() < 2) {
+                                currPiece = currPiece.counterclockwisePiece();
+                            } else {
+                                currPiece = currPiece.clockwisePiece();
+                            }
+                        }
                         return (lastResult = Result.PLACE);
                     }
-                    //System.out.println(grid[(int) position.getY() + currSkirt[i] - 1][(int) (position.getX() + i)]);
                 }
                 position.setLocation((int) position.getX(), (int) (position.getY() - 1));
                 return (lastResult = Result.SUCCESS);
@@ -62,13 +68,13 @@ public final class TetrisBoard implements Board {
                 if (currPiece.getType() == Piece.PieceType.STICK) {
                     wallKicks = Piece.I_CLOCKWISE_WALL_KICKS;
                 }
-                return (lastResult = rotate(wallKicks, currPiece.clockwisePiece(), currPiece));
+                return (lastResult = rotate(wallKicks, true));
             case COUNTERCLOCKWISE:
                 wallKicks = Piece.NORMAL_COUNTERCLOCKWISE_WALL_KICKS;
                 if (currPiece.getType() == Piece.PieceType.STICK) {
                     wallKicks = Piece.I_COUNTERCLOCKWISE_WALL_KICKS;
                 }
-                return (lastResult = rotate(wallKicks, currPiece.counterclockwisePiece(), currPiece));
+                return (lastResult = rotate(wallKicks, false));
             case NOTHING:
                 return (lastResult = Result.SUCCESS);
             default:
@@ -149,7 +155,11 @@ public final class TetrisBoard implements Board {
 
     @Override
     public int getColumnHeight(int x) {
-        return -1;
+        int y = 0;
+        while (grid[y][x] == null) {
+            y++;
+        }
+        return grid.length - y;
     }
 
     @Override
@@ -177,23 +187,28 @@ public final class TetrisBoard implements Board {
         return false;
     }
 
-    private Result rotate(Point[][] wallKicks, Piece rotatedPiece, Piece storedPiece) {
-        Point storePosition = position;
-        currPiece = rotatedPiece;
-        for (int i = 0; i < wallKicks[currPiece.getRotationIndex()].length; i++) {
-            if (!collision()) {
-                break;
-            }
-            int wallKickX = (int) wallKicks[currPiece.getRotationIndex()][i].getX();
-            int wallKickY = (int) wallKicks[currPiece.getRotationIndex()][i].getY();
-            position.setLocation(position.getX() + wallKickX, position.getY() + wallKickY);
-        }
-        if (collision()) {
-            currPiece = storedPiece;
-            position = storePosition;
-            return Result.OUT_BOUNDS;
+    private Result rotate(Point[][] wallKicks, boolean clockwise) {
+        int rotationIdx = currPiece.getRotationIndex();
+        Point storePosition = new Point((int) position.getX(), (int) position.getY());
+        if (clockwise) {
+            currPiece = currPiece.clockwisePiece();
         } else {
-            return Result.SUCCESS;
+            currPiece = currPiece.counterclockwisePiece();
         }
+        for (int i = 0; i < wallKicks[rotationIdx].length; i++) {
+            int wallKickX = (int) wallKicks[rotationIdx][i].getX();
+            int wallKickY = (int) wallKicks[rotationIdx][i].getY();
+            position.setLocation(position.getX() + wallKickX, position.getY() + wallKickY);
+            if (!collision()) {
+                return Result.SUCCESS;
+            }
+        }
+        if (clockwise) {
+            currPiece = currPiece.counterclockwisePiece();
+        } else {
+            currPiece = currPiece.clockwisePiece();
+        }
+        position = storePosition;
+        return Result.OUT_BOUNDS;
     }
 }
