@@ -19,9 +19,6 @@ public final class TetrisBoard implements Board {
     // JTetris will use this constructor
     public TetrisBoard(int width, int height) {
         grid = new Piece.PieceType[height][width];
-        Piece.PieceType[] pieceTypes = {Piece.PieceType.T, Piece.PieceType.SQUARE, Piece.PieceType.STICK, Piece.PieceType.LEFT_L, Piece.PieceType.RIGHT_L, Piece.PieceType.LEFT_DOG, Piece.PieceType.RIGHT_DOG};
-        currPiece = new TetrisPiece(pieceTypes[(int) (Math.random() * pieceTypes.length)]);
-        position = new Point((grid[0].length - currPiece.getWidth()) / 2, grid.length - currPiece.getHeight());
     }
 
     @Override
@@ -30,42 +27,35 @@ public final class TetrisBoard implements Board {
         switch(act) {
             case LEFT:
                 position.setLocation((int) (position.getX() - 1), (int) (position.getY()));
-                if (position.getX() < 0 && collision()) {
+                if (position.getX() < 0 || collision()) {
                     position.setLocation((int) (position.getX() + 1), (int) position.getY());
                     return (lastResult = Result.OUT_BOUNDS);
                 }
                 return (lastResult = Result.SUCCESS);
             case RIGHT:
                 position.setLocation((int) (position.getX() + 1), (int) (position.getY()));
-                if (position.getX() >= grid[0].length && collision()) {
+                if (position.getX() + currPiece.getWidth() - 1 >= grid[0].length || collision()) {
                     position.setLocation((int) (position.getX() - 1), (int) position.getY());
                     return (lastResult = Result.OUT_BOUNDS);
                 }
                 return (lastResult = Result.SUCCESS);
             case DOWN:
                 int[] currSkirt = currPiece.getSkirt();
-                for(int i = 0; i < currSkirt.length; i++) {
-                    if(currSkirt[i] != Integer.MAX_VALUE && grid[(int) position.getY() + currSkirt[i] - 1][(int) (position.getX() + i)] != null) {
-                        return (lastResult = Result.OUT_BOUNDS);
+                for (int i = 0; i < currSkirt.length; i++) {
+                    if (currSkirt[i] != Integer.MAX_VALUE && currSkirt[i] != Integer.MIN_VALUE && ((int) position.getY() + currSkirt[i] - 1 < 0 || grid[grid.length - 1 - (int) position.getY() + currSkirt[i] - 1][(int) (position.getX() + i)] != null)) {
+                        for (Point p : currPiece.getBody()) {
+                            grid[grid.length - 1 - (int) (position.getY() + p.getY())][(int) (position.getX() + p.getX())] = currPiece.getType();
+                        }
+                        return (lastResult = Result.PLACE);
                     }
+                    System.out.println(grid[(int) position.getY() + currSkirt[i] - 1][(int) (position.getX() + i)]);
                 }
                 position.setLocation((int) position.getX(), (int) (position.getY() - 1));
                 return (lastResult = Result.SUCCESS);
             case DROP:
-                currSkirt = currPiece.getSkirt();
-                boolean empty = true;
-                while (empty) {
-                    position.setLocation(position.getX(), position.getY() - 1);
-                    for (int i = 0; i < currSkirt.length; i++) {
-                        if (currSkirt[i] != Integer.MAX_VALUE && grid[(int) position.getY() + currSkirt[i]][(int) position.getX() + i] != null) {
-                            empty = false;
-                        }
-                    }
-                }
-                position.setLocation(position.getX(), position.getY() + 1);
-                Point[] body = currPiece.getBody();
-                for (Point p : body) {
-                    grid[(int) (position.getY() + p.getY())][(int) (position.getX() + p.getX())] = currPiece.getType();
+                Result res = null;
+                while (res != Result.PLACE) {
+                    res = move(Action.DOWN);
                 }
                 return (lastResult = Result.PLACE);
             case CLOCKWISE:
