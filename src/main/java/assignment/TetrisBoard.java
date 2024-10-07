@@ -144,24 +144,23 @@ public final class TetrisBoard implements Board {
         int[] currSkirt = currPiece.getSkirt();
         int minIdx = 0;
         int minSkirt = currSkirt[minIdx];
-        System.out.println(currSkirt[0]);
-        System.out.println(position.getX());
-        System.out.println(minIdx);
         for (int i = 0; i < currSkirt.length; i++) {
             if (position.getX() + minIdx < 0) {
                 minIdx++;
                 minSkirt = currSkirt[minIdx];
-            } else if (position.getX() + minIdx >= 0 && minSkirt + (position.getY() - getColumnHeight((int) position.getX() + minIdx)) > currSkirt[i] + (position.getY() - getColumnHeight((int) position.getX() + i))) {
+            } else if (position.getX() + i >= getWidth()) {
+                break;
+            } else if (minSkirt + (position.getY() - getColumnHeight((int) position.getX() + minIdx) - 1) > currSkirt[i] + (position.getY() - getColumnHeight((int) position.getX() + i) - 1)) {
                 minIdx = i;
                 minSkirt = currSkirt[i];
             }
         }
-        return getColumnHeight((int) position.getX() + minIdx) - minSkirt;
+        return getColumnHeight((int) position.getX() + minIdx) - 1 - minSkirt;
     }
 
     @Override
     public int getColumnHeight(int x) {
-        return colHeights[x];
+        return colHeights[x] + 1;
     }
 
     @Override
@@ -223,7 +222,7 @@ public final class TetrisBoard implements Board {
             }
         }
         for (int i = 0; i < maxBlocks.length; i++) {
-            if (position.getX() + i >= 0) {
+            if (position.getX() + i >= 0 && position.getX() + i < getWidth()) {
                 colHeights[(int) position.getX() + i] = colHeights[(int) position.getX() + i] + maxBlocks[i];
             }
         }
