@@ -225,9 +225,7 @@ public class JTetris extends JComponent {
      * Selects the next piece to use using the random generator
      * set in startGame().
      */
-    public Piece pickNextPiece() {
-        return PIECES[random.nextInt(PIECES.length)];
-    }
+    public Piece pickNextPiece() { return PIECES[random.nextInt(PIECES.length)]; }
 
     /**
      * Adds a new random piece to the board.

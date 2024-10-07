@@ -232,7 +232,9 @@ public final class TetrisBoard implements Board {
         }
         for (int i = 0; i < maxBlocks.length; i++) {
             if (maxBlocks[i] != Integer.MIN_VALUE && position.getX() + i >= 0 && position.getX() + i < getWidth()) {
-                colHeights[(int) position.getX() + i] = (int) position.getY() + maxBlocks[i] + 1;
+                if (colHeights[(int) position.getX() + i] < position.getY() + maxBlocks[i] + 1) {
+                    colHeights[(int) position.getX() + i] = (int) position.getY() + maxBlocks[i] + 1;
+                }
                 if (colHeights[(int) position.getX() + i] > maxHeight) {
                     maxHeight = colHeights[(int) position.getX() + i];
                 }
@@ -251,8 +253,8 @@ public final class TetrisBoard implements Board {
             }
         }
         rowsCleared = rowClear();
-        System.out.println(rowsCleared);
-        System.out.println(getMaxHeight());
+//        System.out.println(rowsCleared);
+//        System.out.println(getMaxHeight());
     }
 
     private int rowClear() {
