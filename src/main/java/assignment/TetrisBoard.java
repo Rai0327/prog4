@@ -156,17 +156,17 @@ public final class TetrisBoard implements Board {
                 minSkirt = currSkirt[minIdx];
             } else if (position.getX() + i >= getWidth()) {
                 break;
-            } else if (minSkirt + (position.getY() - getColumnHeight((int) position.getX() + minIdx) - 1) > currSkirt[i] + (position.getY() - getColumnHeight((int) position.getX() + i) - 1)) {
+            } else if (minSkirt + (position.getY() - getColumnHeight((int) position.getX() + minIdx)) > currSkirt[i] + (position.getY() - getColumnHeight((int) position.getX() + i) - 1)) {
                 minIdx = i;
                 minSkirt = currSkirt[i];
             }
         }
-        return getColumnHeight((int) position.getX() + minIdx) - 1 - minSkirt;
+        return getColumnHeight((int) position.getX() + minIdx) - minSkirt;
     }
 
     @Override
     public int getColumnHeight(int x) {
-        return colHeights[x] + 1;
+        return colHeights[x];
     }
 
     @Override
@@ -259,24 +259,25 @@ public final class TetrisBoard implements Board {
 
     private int rowClear() {
         int clears = 0;
-        for(int r = 1; r < getMaxHeight(); r++) {
+        for(int r = 1; r < getMaxHeight() + 1; r++) {
             if (getRowWidth(r - 1) == grid[grid.length - 1 - (r - 1)].length) {
-                for (int i = r + 1; i < getMaxHeight(); i++) {
-                    for (int j = 0; j < grid[grid.length - 1 - i].length; j++) {
-                        grid[grid.length - 1 - (i - 1)][j] = grid[grid.length - 1 - i][j];
+                for (int i = r + 1; i < getMaxHeight() + 1; i++) {
+                    for (int j = 0; j < grid[grid.length - 1 - (i - 1)].length; j++) {
+                        grid[grid.length - 1 - (i - 2)][j] = grid[grid.length - 1 - (i - 1)][j];
                     }
                 }
                 maxHeight--;
-                for (int i = 0; i < grid[getMaxHeight()].length; i++) {
+                for (int i = 0; i < grid[grid.length - 1 - (getMaxHeight())].length; i++) {
                     grid[grid.length - 1 - (getMaxHeight())][i] = null;
                 }
                 //Need to fix column Heights cuz when you remove a row not all columns subtract by 1
                 for (int i = 0; i < colHeights.length; i++) {
-                    System.out.println("R: " + r + " colHeight: " + (getColumnHeight(i) - 1));
-                    if (r == getColumnHeight(i) - 1) {
-                        for (int j = grid[grid.length - 1 - i].length - 1; j >= 0; j--) {
-                            if (grid[grid.length - 1 - i][j] != null) {
+                    if (r == getColumnHeight(i)) {
+                        for (int j = getColumnHeight(i) - 1; j >= 0; j--) {
+                            colHeights[i] = 0;
+                            if (grid[grid.length - 1 - j][i] != null) {
                                 colHeights[i] = j + 1;
+                                break;
                             }
                         }
                     } else {
