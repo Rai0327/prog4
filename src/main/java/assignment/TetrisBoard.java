@@ -14,10 +14,12 @@ public final class TetrisBoard implements Board {
     private Point position;
     private Result lastResult;
     private Action lastAction;
+    private int[] colHeights;
 
     // JTetris will use this constructor
     public TetrisBoard(int width, int height) {
         grid = new Piece.PieceType[height][width];
+        colHeights = new int[width];
     }
 
     @Override
@@ -42,26 +44,15 @@ public final class TetrisBoard implements Board {
                 int[] currSkirt = currPiece.getSkirt();
                 for (int i = 0; i < currSkirt.length; i++) {
                     if (currSkirt[i] != Integer.MAX_VALUE && currSkirt[i] != Integer.MIN_VALUE && ((int) position.getY() + currSkirt[i] - 1 < 0 || grid[grid.length - 1 - ((int) position.getY() + currSkirt[i] - 1)][(int) (position.getX() + i)] != null)) {
-                        for (Point p : currPiece.getBody()) {
-                            grid[grid.length - 1 - (int) (position.getY() + p.getY())][(int) (position.getX() + p.getX())] = currPiece.getType();
-                        }
-                        while (currPiece.getRotationIndex() != 0) {
-                            if (currPiece.getRotationIndex() < 2) {
-                                currPiece = currPiece.counterclockwisePiece();
-                            } else {
-                                currPiece = currPiece.clockwisePiece();
-                            }
-                        }
+                        place();
                         return (lastResult = Result.PLACE);
                     }
                 }
                 position.setLocation((int) position.getX(), (int) (position.getY() - 1));
                 return (lastResult = Result.SUCCESS);
             case DROP:
-                Result res = null;
-                while (res != Result.PLACE) {
-                    res = move(Action.DOWN);
-                }
+                position.setLocation(position.getX(), dropHeight(currPiece, (int) position.getY()));
+                place();
                 return (lastResult = Result.PLACE);
             case CLOCKWISE:
                 Point[][] wallKicks = Piece.NORMAL_CLOCKWISE_WALL_KICKS;
@@ -150,16 +141,27 @@ public final class TetrisBoard implements Board {
 
     @Override
     public int dropHeight(Piece piece, int x) {
-        return -1;
+        int[] currSkirt = currPiece.getSkirt();
+        int minIdx = 0;
+        int minSkirt = currSkirt[minIdx];
+        System.out.println(currSkirt[0]);
+        System.out.println(position.getX());
+        System.out.println(minIdx);
+        for (int i = 0; i < currSkirt.length; i++) {
+            if (position.getX() + minIdx < 0) {
+                minIdx++;
+                minSkirt = currSkirt[minIdx];
+            } else if (position.getX() + minIdx >= 0 && minSkirt + (position.getY() - getColumnHeight((int) position.getX() + minIdx)) > currSkirt[i] + (position.getY() - getColumnHeight((int) position.getX() + i))) {
+                minIdx = i;
+                minSkirt = currSkirt[i];
+            }
+        }
+        return getColumnHeight((int) position.getX() + minIdx) - minSkirt;
     }
 
     @Override
     public int getColumnHeight(int x) {
-        int y = 0;
-        while (grid[y][x] == null) {
-            y++;
-        }
-        return grid.length - y;
+        return colHeights[x];
     }
 
     @Override
@@ -210,5 +212,44 @@ public final class TetrisBoard implements Board {
         }
         position = storePosition;
         return Result.OUT_BOUNDS;
+    }
+
+    private void place() {
+        int[] maxBlocks = new int[currPiece.getWidth()];
+        for (Point p : currPiece.getBody()) {
+            grid[grid.length - 1 - (int) (position.getY() + p.getY())][(int) (position.getX() + p.getX())] = currPiece.getType();
+            if (p.getY() > maxBlocks[(int) p.getX()]) {
+                maxBlocks[(int) p.getX()] = (int) p.getY();
+            }
+        }
+        for (int i = 0; i < maxBlocks.length; i++) {
+            if (position.getX() + i >= 0) {
+                colHeights[(int) position.getX() + i] = colHeights[(int) position.getX() + i] + maxBlocks[i];
+            }
+        }
+        while (currPiece.getRotationIndex() != 0) {
+            if (currPiece.getRotationIndex() < 2) {
+                currPiece = currPiece.counterclockwisePiece();
+            } else {
+                currPiece = currPiece.clockwisePiece();
+            }
+        }
+    }
+
+    private int rowClear() {
+        int clears = 0;
+        for(int r = 0; r < getMaxHeight(); r++) {
+            if (getRowWidth(r) == grid[grid.length - 1 - r].length) {
+                for (int i = r + 1; i < getMaxHeight(); i++) {
+                    for (int j = 0; j < grid[grid.length - 1 - i].length; j++) {
+                        grid[grid.length - 1 - i - 1][j] = grid[grid.length - 1 - i][j];
+                    }
+                }
+                clears++;
+                r--;
+                //Decrease maxHeight variable here
+            }
+        }
+        return clears;
     }
 }
