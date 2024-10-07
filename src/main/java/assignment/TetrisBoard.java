@@ -238,6 +238,11 @@ public final class TetrisBoard implements Board {
                 }
             }
         }
+        for (int i = 0; i < colHeights.length; i++) {
+            System.out.print(colHeights[i] + " ");
+        }
+        System.out.println();
+
         while (currPiece.getRotationIndex() != 0) {
             if (currPiece.getRotationIndex() < 2) {
                 currPiece = currPiece.counterclockwisePiece();
@@ -259,16 +264,26 @@ public final class TetrisBoard implements Board {
                         grid[grid.length - 1 - (i - 1)][j] = grid[grid.length - 1 - i][j];
                     }
                 }
-                clears++;
-                r--;
-                //Need to fix column Heights cuz when you remove a row not all columns subtract by 1
-                for (int i = 0; i < colHeights.length; i++) {
-                    colHeights[i]--;
-                }
                 maxHeight--;
                 for (int i = 0; i < grid[getMaxHeight()].length; i++) {
                     grid[grid.length - 1 - (getMaxHeight())][i] = null;
                 }
+                //Need to fix column Heights cuz when you remove a row not all columns subtract by 1
+                for (int i = 0; i < colHeights.length; i++) {
+                    if (r == getColumnHeight(i)) {
+                        for (int j = grid[grid.length - 1 - i].length; j >= 0; j--) {
+                            if (grid[grid.length - 1 - i][j] != null) {
+                                colHeights[i] = j;
+                            }
+                        }
+                    } else {
+                        colHeights[i]--;
+                    }
+                    System.out.print(colHeights[i] + " ");
+                }
+                clears++;
+                r--;
+                System.out.println();
             }
         }
         return clears;
