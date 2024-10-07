@@ -259,8 +259,8 @@ public final class TetrisBoard implements Board {
 
     private int rowClear() {
         int clears = 0;
-        for(int r = 0; r < getMaxHeight(); r++) {
-            if (getRowWidth(r) == grid[grid.length - 1 - r].length) {
+        for(int r = 1; r < getMaxHeight(); r++) {
+            if (getRowWidth(r - 1) == grid[grid.length - 1 - (r - 1)].length) {
                 for (int i = r + 1; i < getMaxHeight(); i++) {
                     for (int j = 0; j < grid[grid.length - 1 - i].length; j++) {
                         grid[grid.length - 1 - (i - 1)][j] = grid[grid.length - 1 - i][j];
@@ -272,10 +272,11 @@ public final class TetrisBoard implements Board {
                 }
                 //Need to fix column Heights cuz when you remove a row not all columns subtract by 1
                 for (int i = 0; i < colHeights.length; i++) {
-                    if (r == getColumnHeight(i)) {
-                        for (int j = grid[grid.length - 1 - i].length; j >= 0; j--) {
+                    System.out.println("R: " + r + " colHeight: " + (getColumnHeight(i) - 1));
+                    if (r == getColumnHeight(i) - 1) {
+                        for (int j = grid[grid.length - 1 - i].length - 1; j >= 0; j--) {
                             if (grid[grid.length - 1 - i][j] != null) {
-                                colHeights[i] = j;
+                                colHeights[i] = j + 1;
                             }
                         }
                     } else {
