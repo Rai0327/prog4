@@ -15,6 +15,8 @@ public final class TetrisBoard implements Board {
     private Result lastResult;
     private Action lastAction;
     private int[] colHeights;
+    private int maxHeight = 0;
+    private int rowsCleared;
 
     // JTetris will use this constructor
     public TetrisBoard(int width, int height) {
@@ -121,7 +123,11 @@ public final class TetrisBoard implements Board {
 
     @Override
     public int getRowsCleared() {
-        return -1;
+        if (getLastAction().equals(Result.PLACE)) {
+            return rowsCleared;
+        } else {
+            return 0;
+        }
     }
 
     @Override
@@ -136,7 +142,7 @@ public final class TetrisBoard implements Board {
 
     @Override
     public int getMaxHeight() {
-        return -1;
+        return maxHeight;
     }
 
     @Override
@@ -167,7 +173,7 @@ public final class TetrisBoard implements Board {
     public int getRowWidth(int y) {
         int count = 0;
         for(int i = 0; i < grid[y].length; i++) {
-            if(grid[y][i] != null) {
+            if(grid[grid.length - 1 - y][i] != null) {
                 count++;
             }
         }
@@ -227,6 +233,9 @@ public final class TetrisBoard implements Board {
         for (int i = 0; i < maxBlocks.length; i++) {
             if (maxBlocks[i] != Integer.MIN_VALUE && position.getX() + i >= 0 && position.getX() + i < getWidth()) {
                 colHeights[(int) position.getX() + i] = (int) position.getY() + maxBlocks[i] + 1;
+                if (colHeights[(int) position.getX() + i] > maxHeight) {
+                    maxHeight = colHeights[(int) position.getX() + i];
+                }
             }
         }
         while (currPiece.getRotationIndex() != 0) {
@@ -236,6 +245,9 @@ public final class TetrisBoard implements Board {
                 currPiece = currPiece.clockwisePiece();
             }
         }
+        rowsCleared = rowClear();
+        System.out.println(rowsCleared);
+        System.out.println(getMaxHeight());
     }
 
     private int rowClear() {
@@ -244,12 +256,19 @@ public final class TetrisBoard implements Board {
             if (getRowWidth(r) == grid[grid.length - 1 - r].length) {
                 for (int i = r + 1; i < getMaxHeight(); i++) {
                     for (int j = 0; j < grid[grid.length - 1 - i].length; j++) {
-                        grid[grid.length - 1 - i - 1][j] = grid[grid.length - 1 - i][j];
+                        grid[grid.length - 1 - (i - 1)][j] = grid[grid.length - 1 - i][j];
                     }
                 }
                 clears++;
                 r--;
-                //Decrease maxHeight variable here
+                //Need to fix column Heights cuz when you remove a row not all columns subtract by 1
+                for (int i = 0; i < colHeights.length; i++) {
+                    colHeights[i]--;
+                }
+                maxHeight--;
+                for (int i = 0; i < grid[getMaxHeight()].length; i++) {
+                    grid[grid.length - 1 - (getMaxHeight())][i] = null;
+                }
             }
         }
         return clears;
