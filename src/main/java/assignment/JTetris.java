@@ -100,12 +100,12 @@ public class JTetris extends JComponent {
     // The 7 canonical tetris pieces.
     public final Piece[] PIECES = new Piece[] {
         new TetrisPiece(PieceType.STICK),
-//        new TetrisPiece(PieceType.SQUARE),
-//        new TetrisPiece(PieceType.T),
-//        new TetrisPiece(PieceType.LEFT_L),
-//        new TetrisPiece(PieceType.RIGHT_L),
-//        new TetrisPiece(PieceType.LEFT_DOG),
-//        new TetrisPiece(PieceType.RIGHT_DOG)
+        new TetrisPiece(PieceType.SQUARE),
+        new TetrisPiece(PieceType.T),
+        new TetrisPiece(PieceType.LEFT_L),
+        new TetrisPiece(PieceType.RIGHT_L),
+        new TetrisPiece(PieceType.LEFT_DOG),
+        new TetrisPiece(PieceType.RIGHT_DOG)
     };
 
     JTetris() {

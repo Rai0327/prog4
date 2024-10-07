@@ -77,7 +77,9 @@ public final class TetrisBoard implements Board {
 
     @Override
     public Board testMove(Action act) {
-        return null;
+        Board b = clone();
+        b.move(act);
+        return b;
     }
 
     @Override
@@ -240,10 +242,6 @@ public final class TetrisBoard implements Board {
                 }
             }
         }
-        for (int i = 0; i < colHeights.length; i++) {
-            System.out.print(colHeights[i] + " ");
-        }
-        System.out.println();
 
         while (currPiece.getRotationIndex() != 0) {
             if (currPiece.getRotationIndex() < 2) {
@@ -253,8 +251,6 @@ public final class TetrisBoard implements Board {
             }
         }
         rowsCleared = rowClear();
-//        System.out.println(rowsCleared);
-//        System.out.println(getMaxHeight());
     }
 
     private int rowClear() {
@@ -283,13 +279,31 @@ public final class TetrisBoard implements Board {
                     } else {
                         colHeights[i]--;
                     }
-                    System.out.print(colHeights[i] + " ");
                 }
                 clears++;
                 r--;
-                System.out.println();
             }
         }
         return clears;
+    }
+
+    public void setCurrentPiecePosition(Point pos) {
+        position = pos;
+    }
+
+    public void setCurrentPiece(Piece p) {
+        currPiece = p;
+    }
+
+    public void setGridArray(Piece.PieceType[][] grid) {
+        this.grid = grid;
+    }
+
+    public TetrisBoard clone() {
+        TetrisBoard b = new TetrisBoard(getWidth(), getHeight());
+        b.setGridArray(grid);
+        b.setCurrentPiece(currPiece);
+        b.setCurrentPiecePosition(position);
+        return b;
     }
 }
