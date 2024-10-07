@@ -215,6 +215,9 @@ public final class TetrisBoard implements Board {
 
     private void place() {
         int[] maxBlocks = new int[currPiece.getWidth()];
+        for (int i = 0; i < maxBlocks.length; i++) {
+            maxBlocks[i] = Integer.MIN_VALUE;
+        }
         for (Point p : currPiece.getBody()) {
             grid[grid.length - 1 - (int) (position.getY() + p.getY())][(int) (position.getX() + p.getX())] = currPiece.getType();
             if (p.getY() > maxBlocks[(int) p.getX()]) {
@@ -222,8 +225,8 @@ public final class TetrisBoard implements Board {
             }
         }
         for (int i = 0; i < maxBlocks.length; i++) {
-            if (position.getX() + i >= 0 && position.getX() + i < getWidth()) {
-                colHeights[(int) position.getX() + i] = colHeights[(int) position.getX() + i] + maxBlocks[i];
+            if (maxBlocks[i] != Integer.MIN_VALUE && position.getX() + i >= 0 && position.getX() + i < getWidth()) {
+                colHeights[(int) position.getX() + i] = (int) position.getY() + maxBlocks[i] + 1;
             }
         }
         while (currPiece.getRotationIndex() != 0) {
