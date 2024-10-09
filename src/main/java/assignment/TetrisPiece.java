@@ -32,7 +32,6 @@ public final class TetrisPiece implements Piece {
     private static final int numRotations = 4;
 
     public TetrisPiece(PieceType type) {
-        // TODO: Implement me.
         this.type = type;
         rotationIdx = 0;
         body = type.getSpawnBody();
@@ -40,6 +39,7 @@ public final class TetrisPiece implements Piece {
         height = (int) type.getBoundingBox().getHeight();
         curr = new Node(body, width, height, rotationIdx);
         Node head = curr;
+        // go through the linked list and store all the instance variables for each rotated instance of the piece
         for (int i = 0; i < numRotations; i++) {
             if (i == numRotations - 1) {
                 curr.next = head;
@@ -59,19 +59,17 @@ public final class TetrisPiece implements Piece {
 
     @Override
     public PieceType getType() {
-        // TODO: Implement me.
         return type;
     }
 
     @Override
     public int getRotationIndex() {
-        // TODO: Implement me.
         return rotationIdx;
     }
 
+    // update the instance variables to those of the rotated piece
     @Override
     public Piece clockwisePiece() {
-        // TODO: Implement me.
         curr = curr.next;
         body = curr.getBody();
         width = curr.getWidth();
@@ -81,6 +79,7 @@ public final class TetrisPiece implements Piece {
         return this;
     }
 
+    // update the instance variables to those of the rotated piece
     @Override
     public Piece counterclockwisePiece() {
         curr = curr.prev;
@@ -94,25 +93,21 @@ public final class TetrisPiece implements Piece {
 
     @Override
     public int getWidth() {
-        // TODO: Implement me.
         return width;
     }
 
     @Override
     public int getHeight() {
-        // TODO: Implement me.
         return height;
     }
 
     @Override
     public Point[] getBody() {
-        // TODO: Implement me.
         return body;
     }
 
     @Override
     public int[] getSkirt() {
-        // TODO: Implement me.
         return skirt;
     }
 
@@ -122,43 +117,11 @@ public final class TetrisPiece implements Piece {
         if(!(other instanceof TetrisPiece)) return false;
         TetrisPiece otherPiece = (TetrisPiece) other;
 
-        // TODO: Implement me.
-        return false;
-    }
-
-    public void testRotations() {
-        for (int i = 0; i < numRotations; i++) {
-            int[][] temp = new int[height][width];
-            for (int j = 0; j < curr.getBody().length; j++) {
-                temp[temp.length - 1 - (int) curr.getBody()[j].getY()][(int) curr.getBody()[j].getX()] = 1;
-            }
-            print(temp);
-            System.out.println(curr.getRotationIdx());
-            curr = curr.next;
-            width = curr.getWidth();
-            height = curr.getHeight();
-        }
-        for (int i = 0; i < numRotations; i++) {
-            int[][] temp = new int[width][height];
-            for (int j = 0; j < curr.getBody().length; j++) {
-                temp[temp.length - 1 - (int) curr.getBody()[j].getY()][(int) curr.getBody()[j].getX()] = 1;
-            }
-            curr = curr.prev;
-            width = curr.getWidth();
-            height = curr.getHeight();
-        }
-    }
-
-    public void print(int[][] arr) {
-        for (int r = 0; r < arr.length; r++) {
-            for (int c = 0; c < arr[r].length; c++) {
-                System.out.print(arr[r][c]);
-            }
-            System.out.println();
-        }
+        return (type == otherPiece.getType()) && (rotationIdx == otherPiece.getRotationIndex());
     }
 }
 
+// class to implement the linked list that stores the piece's rotations
 class Node {
 
     private Point[] body;

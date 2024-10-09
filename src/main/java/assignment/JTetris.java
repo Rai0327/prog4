@@ -100,12 +100,12 @@ public class JTetris extends JComponent {
     // The 7 canonical tetris pieces.
     public final Piece[] PIECES = new Piece[] {
         new TetrisPiece(PieceType.STICK),
-        new TetrisPiece(PieceType.SQUARE),
-        new TetrisPiece(PieceType.T),
+//        new TetrisPiece(PieceType.SQUARE),
+//        new TetrisPiece(PieceType.T),
         new TetrisPiece(PieceType.LEFT_L),
-        new TetrisPiece(PieceType.RIGHT_L),
-        new TetrisPiece(PieceType.LEFT_DOG),
-        new TetrisPiece(PieceType.RIGHT_DOG)
+//        new TetrisPiece(PieceType.RIGHT_L),
+//        new TetrisPiece(PieceType.LEFT_DOG),
+//        new TetrisPiece(PieceType.RIGHT_DOG)
     };
 
     JTetris() {
@@ -364,6 +364,10 @@ public class JTetris extends JComponent {
                 if (pieceType != null) {
                     // +1 to leave a white border
                     g.setColor(pieceType.getColor());
+                    g.fillRect(left + 1, yPixel(y) + 1, dx, dy);
+                }
+                else{
+                    g.setColor(new Color(220, 220, 220));
                     g.fillRect(left + 1, yPixel(y) + 1, dx, dy);
                 }
             }
