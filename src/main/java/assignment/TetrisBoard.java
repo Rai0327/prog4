@@ -15,6 +15,7 @@ public final class TetrisBoard implements Board {
     private Result lastResult;
     private Action lastAction;
     private int[] colHeights;
+    private int[] rowWidths;
     private int maxHeight = 0;
     private int rowsCleared;
 
@@ -22,6 +23,7 @@ public final class TetrisBoard implements Board {
     public TetrisBoard(int width, int height) {
         grid = new Piece.PieceType[height][width];
         colHeights = new int[width];
+        rowWidths = new int[height];
     }
 
     @Override
@@ -186,14 +188,7 @@ public final class TetrisBoard implements Board {
 
     @Override
     public int getRowWidth(int y) {
-        // count all the elements in a row that is not null
-        int count = 0;
-        for(int i = 0; i < grid[y].length; i++) {
-            if(grid[grid.length - 1 - y][i] != null) {
-                count++;
-            }
-        }
-        return count;
+        return rowWidths[y];
     }
 
     @Override
@@ -249,6 +244,7 @@ public final class TetrisBoard implements Board {
         // place the current piece on the grid and store the highest block in each altered column
         for (Point p : currPiece.getBody()) {
             grid[grid.length - 1 - (int) (position.getY() + p.getY())][(int) (position.getX() + p.getX())] = currPiece.getType();
+            rowWidths[(int) (position.getY() + p.getY())]++;
             if (p.getY() > maxBlocks[(int) p.getX()]) {
                 maxBlocks[(int) p.getX()] = (int) p.getY();
             }
@@ -287,6 +283,7 @@ public final class TetrisBoard implements Board {
                 for (int i = r + 1; i < getMaxHeight() + 2; i++) {
                     for (int j = 0; j < grid[grid.length - 1 - (i - 1)].length; j++) {
                         grid[grid.length - 1 - (i - 2)][j] = grid[grid.length - 1 - (i - 1)][j];
+                        rowWidths[(i - 2)] = rowWidths[(i - 1)];
                     }
                 }
 
