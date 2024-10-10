@@ -162,23 +162,20 @@ public final class TetrisBoard implements Board {
 
     @Override
     public int dropHeight(Piece piece, int x) {
+        Point storePosition = new Point((int) position.getX(), (int) position.getY());
         int[] currSkirt = currPiece.getSkirt();
-        int minIdx = 0;
-        int minSkirt = currSkirt[minIdx];
-        // get the skirt element that has the smallest difference between y-value and column height
-        for (int i = 0; i < currSkirt.length; i++) {
-            if (position.getX() + minIdx < 0) {
-                minIdx++;
-                minSkirt = currSkirt[minIdx];
-            } else if (position.getX() + i >= getWidth()) {
-                break;
-            } else if (minSkirt + (position.getY() - getColumnHeight((int) position.getX() + minIdx)) > currSkirt[i] + (position.getY() - getColumnHeight((int) position.getX() + i) - 1)) {
-                minIdx = i;
-                minSkirt = currSkirt[i];
+        while (true) {
+            for (int i = 0; i < currSkirt.length; i++) {
+                // for each skirt element, if there is a block below it or out of bounds, place the piece
+                if (currSkirt[i] != Integer.MAX_VALUE && currSkirt[i] != Integer.MIN_VALUE && ((int) position.getY() + currSkirt[i] - 1 < 0 || grid[grid.length - 1 - ((int) position.getY() + currSkirt[i] - 1)][(int) (position.getX() + i)] != null)) {
+                    int dropY = (int) position.getY();
+                    position.setLocation(storePosition);
+                    return dropY;
+                }
             }
+            // move the position down by 1
+            position.setLocation((int) position.getX(), (int) (position.getY() - 1));
         }
-        // return the difference between y-value and column height subtracted from the current y-position
-        return getColumnHeight((int) position.getX() + minIdx) - minSkirt;
     }
 
     @Override
