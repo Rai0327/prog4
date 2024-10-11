@@ -294,7 +294,7 @@ public final class TetrisBoard implements Board {
                 System.err.println("Piece body has null point value");
                 return true;
             }
-            if ((int) (i.getX() + position.getX()) < 0 || (int) (i.getX() + position.getX()) > grid[0].length - 1 || grid[grid.length - 1 - (int) (i.getY() + position.getY())][(int) (i.getX() + position.getX())] != null) {
+            if ((int) (i.getY() + position.getY()) < 0 || (int) (i.getY() + position.getY()) >= grid.length || (int) (i.getX() + position.getX()) < 0 || (int) (i.getX() + position.getX()) >= grid[0].length || grid[grid.length - 1 - (int) (i.getY() + position.getY())][(int) (i.getX() + position.getX())] != null) {
                 return true;
             }
         }
