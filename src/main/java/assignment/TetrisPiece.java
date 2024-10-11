@@ -35,8 +35,20 @@ public final class TetrisPiece implements Piece {
         this.type = type;
         rotationIdx = 0;
         body = type.getSpawnBody();
+        if (body == null) {
+            System.err.println("TetrisPiece: body is null");
+            return;
+        }
         width = (int) type.getBoundingBox().getWidth();
+        if (width <= 0) {
+            System.err.println("TetrisPiece: width isn't positive");
+            return;
+        }
         height = (int) type.getBoundingBox().getHeight();
+        if (height <= 0) {
+            System.err.println("TetrisPiece: width isn't positive");
+            return;
+        }
         curr = new Node(body, width, height, rotationIdx);
         Node head = curr;
         // go through the linked list and store all the instance variables for each rotated instance of the piece
@@ -46,6 +58,10 @@ public final class TetrisPiece implements Piece {
             } else {
                 Point[] temp = new Point[body.length];
                 for (int j = 0; j < body.length; j++) {
+                    if (body[j] == null) {
+                        System.err.println("TetrisPiece: point in body is null");
+                        return;
+                    }
                     temp[j] = new Point((int) body[j].getY(), width - 1 - (int) body[j].getX());
                 }
                 curr.next = new Node(temp, height, width, (curr.getRotationIdx() + 1) % numRotations);
@@ -59,6 +75,9 @@ public final class TetrisPiece implements Piece {
 
     @Override
     public PieceType getType() {
+        if (type == null) {
+            System.err.println("Error: Piece type is null");
+        }
         return type;
     }
 
@@ -93,21 +112,33 @@ public final class TetrisPiece implements Piece {
 
     @Override
     public int getWidth() {
+        if (width <= 0) {
+            System.err.println("Error: Width is not positive");
+        }
         return width;
     }
 
     @Override
     public int getHeight() {
+        if (height <= 0) {
+            System.err.println("Error: Height is not positive");
+        }
         return height;
     }
 
     @Override
     public Point[] getBody() {
+        if (body == null) {
+            System.err.println("Error: Piece body is empty");
+        }
         return body;
     }
 
     @Override
     public int[] getSkirt() {
+        if (skirt == null) {
+            System.err.println("Error: Piece skirt is empty");
+        }
         return skirt;
     }
 
@@ -137,16 +168,23 @@ class Node {
         this.width = width;
         this.height = height;
         this.rotationIdx = rotationIdx;
+        if (width <= 0) {
+            System.err.println("TetrisPiece: width isn't positive");
+            return;
+        }
         skirt = new int[width];
         for (int i = 0; i < width; i++) {
             skirt[i] = Integer.MAX_VALUE;
         }
         for (Point p : body) {
+            if (p == null) {
+                System.err.println("TetrisPiece: point in body is null");
+                return;
+            }
             if (p.getY() < skirt[(int) p.getX()]) {
                 skirt[(int) p.getX()] = (int) p.getY();
             }
         }
-
     }
 
     public Point[] getBody() {

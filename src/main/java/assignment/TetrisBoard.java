@@ -21,6 +21,14 @@ public final class TetrisBoard implements Board {
 
     // JTetris will use this constructor
     public TetrisBoard(int width, int height) {
+        if (height <= 0) {
+            System.err.println("Negative height");
+            return;
+        }
+        if (width <= 0) {
+            System.err.println("Negative width");
+            return;
+        }
         grid = new Piece.PieceType[height][width];
         colHeights = new int[width];
         rowWidths = new int[height];
@@ -28,7 +36,22 @@ public final class TetrisBoard implements Board {
 
     @Override
     public Result move(Action act) {
+        if (act == null) {
+            System.err.println("Null action");
+            return null;
+        }
         lastAction = act;
+
+        if (currPiece == null) {
+            System.out.println("Current piece is null1");
+            return null;
+        }
+
+        if (position == null) {
+            System.out.println("Position is null");
+            return null;
+        }
+
         switch(act) {
             case LEFT:
                 // shift position 1 to the left
@@ -62,7 +85,7 @@ public final class TetrisBoard implements Board {
                 return (lastResult = Result.SUCCESS);
             case DROP:
                 // drop and place the piece
-                position.setLocation(position.getX(), dropHeight(currPiece, (int) position.getY()));
+                position.setLocation(position.getX(), dropHeight(currPiece, (int) position.getX()));
                 place();
                 return (lastResult = Result.PLACE);
             case CLOCKWISE:
@@ -88,6 +111,9 @@ public final class TetrisBoard implements Board {
     @Override
     public Board testMove(Action act) {
         // clone the current board and perform the action on it
+        if (act == null) {
+            return null;
+        }
         Board b = clone();
         b.move(act);
         return b;
@@ -95,18 +121,37 @@ public final class TetrisBoard implements Board {
 
     @Override
     public Piece getCurrentPiece() {
+        if (currPiece == null) {
+            System.err.println("Current piece is null2");
+            return null;
+        }
         return currPiece;
     }
 
     @Override
     public Point getCurrentPiecePosition() {
+        if (position == null) {
+            System.err.println("Current piece is null3");
+        }
         return position;
     }
 
     @Override
     public void nextPiece(Piece p, Point spawnPosition) {
+        if (p == null) {
+            System.err.println("Null next piece");
+            return;
+        }
+        if (spawnPosition == null) {
+            System.err.println("Null spawn position");
+            return;
+        }
         currPiece = p;
         position = spawnPosition;
+        if (collision()) {
+            System.err.println("Invalid initial spawn");
+            position = null;
+        }
     }
 
     @Override
@@ -147,11 +192,17 @@ public final class TetrisBoard implements Board {
 
     @Override
     public int getWidth() {
+        if (grid == null) {
+            System.err.println("Grid is null");
+        }
         return grid[0].length;
     }
 
     @Override
     public int getHeight() {
+        if (grid.length <= 0) {
+            System.err.println("Height is not positive");
+        }
         return grid.length;
     }
 
@@ -162,7 +213,18 @@ public final class TetrisBoard implements Board {
 
     @Override
     public int dropHeight(Piece piece, int x) {
+        if (piece == null) {
+            System.err.println("Piece is null");
+            return -1;
+        }
+
         Point storePosition = new Point((int) position.getX(), (int) position.getY());
+        position.setLocation(x, (int) position.getY());
+
+        if (collision()) {
+            System.err.println("Invalid initial drop position");
+        }
+
         int[] currSkirt = currPiece.getSkirt();
         while (true) {
             for (int i = 0; i < currSkirt.length; i++) {
@@ -180,23 +242,58 @@ public final class TetrisBoard implements Board {
 
     @Override
     public int getColumnHeight(int x) {
+        if (colHeights == null) {
+            System.err.println("Column does not exist");
+            return -1;
+        }
+        if (x < 0 || x >= colHeights.length) {
+            System.err.println("Column index out of bounds");
+            return -1;
+        }
         return colHeights[x];
     }
 
     @Override
     public int getRowWidth(int y) {
+        if (rowWidths == null) {
+            System.err.println("Row does not exist");
+            return -1;
+        }
+        if (y < 0 || y >= rowWidths.length) {
+            System.err.println("Row index out of bounds");
+            return -1;
+        }
         return rowWidths[y];
     }
 
     @Override
     public Piece.PieceType getGrid(int x, int y) {
+        if (grid == null) {
+            System.err.println("Grid is null");
+            return null;
+        }
+        if (y < 0 || y >= grid.length || x < 0 || x >= grid[grid.length - 1 - y].length) {
+            System.err.println("Grid index input out of bounds");
+        }
         return grid[grid.length - 1 - y][x];
     }
 
     // helper method to detect collision and out of bounds
     private boolean collision() {
+        if (currPiece.getBody() == null) {
+            System.err.println("Piece body is null");
+            return true;
+        }
+        if (position == null) {
+            System.err.println("Position is null");
+            return true;
+        }
         // check if current piece intersects with any other blocks or is out of bounds
         for (Point i : currPiece.getBody()) {
+            if (i == null) {
+                System.err.println("Piece body has null point value");
+                return true;
+            }
             if ((int) (i.getX() + position.getX()) < 0 || (int) (i.getX() + position.getX()) > grid[0].length - 1 || grid[grid.length - 1 - (int) (i.getY() + position.getY())][(int) (i.getX() + position.getX())] != null) {
                 return true;
             }
@@ -310,22 +407,52 @@ public final class TetrisBoard implements Board {
     }
 
     public void setCurrentPiecePosition(Point pos) {
+        if (pos == null) {
+            System.err.println("Null posiiton input is invalid");
+            return;
+        }
         position = pos;
     }
 
     public void setCurrentPiece(Piece p) {
+        if (p == null) {
+            System.err.println("Null piece input is invalid");
+            return;
+        }
         currPiece = p;
     }
 
     public void setGridArray(Piece.PieceType[][] grid) {
+        if (grid == null) {
+            System.err.println("Null grid input is invalid");
+            return;
+        }
         this.grid = grid;
     }
 
     // clone the current TetrisBoard object
     public TetrisBoard clone() {
+        if (getWidth() <= 0) {
+            System.err.println("Width is not positive");
+        }
+        if (getHeight() <= 0) {
+            System.err.println("Width is not positive");
+        }
         TetrisBoard b = new TetrisBoard(getWidth(), getHeight());
+        if (grid == null) {
+            System.err.println("Grid is null");
+            return null;
+        }
         b.setGridArray(grid);
+        if (currPiece == null) {
+            System.err.println("Current piece is null4");
+            return null;
+        }
         b.setCurrentPiece(currPiece);
+        if (position == null) {
+            System.err.println("Position is null");
+            return null;
+        }
         b.setCurrentPiecePosition(position);
         return b;
     }
