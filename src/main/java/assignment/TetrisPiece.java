@@ -32,6 +32,10 @@ public final class TetrisPiece implements Piece {
     private static final int numRotations = 4;
 
     public TetrisPiece(PieceType type) {
+        if (type == null) {
+            System.out.println("TetrisPiece: type is null");
+            return;
+        }
         this.type = type;
         rotationIdx = 0;
         body = type.getSpawnBody();
@@ -60,6 +64,14 @@ public final class TetrisPiece implements Piece {
                 for (int j = 0; j < body.length; j++) {
                     if (body[j] == null) {
                         System.err.println("TetrisPiece: point in body is null");
+                        return;
+                    }
+                    if ((int) body[j].getX() > width - 1 || (int) body[j].getX() > height - 1) {
+                        System.err.println("TetrisPiece: body out of bounding box");
+                        return;
+                    }
+                    if ((int) body[j].getY() > width - 1 || (int) body[j].getY() > height - 1) {
+                        System.err.println("TetrisPiece: body out of bounding box");
                         return;
                     }
                     temp[j] = new Point((int) body[j].getY(), width - 1 - (int) body[j].getX());

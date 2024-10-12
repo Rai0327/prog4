@@ -33,7 +33,15 @@ public class LameBrain implements Brain {
             }
         }
 
+        Piece.PieceType[][] grid = new Piece.PieceType[currentBoard.getHeight()][currentBoard.getWidth()];
+        for (int r = 0; r < grid.length; r++) {
+            for (int c = 0; c < grid[r].length; c++) {
+                grid[grid.length - 1 - r][c] = currentBoard.getGrid(c, r);
+            }
+        }
+
         // We want to return the first move on the way to the best Board
+        //System.out.println(firstMoves.get(bestIndex));
         return firstMoves.get(bestIndex);
     }
 
