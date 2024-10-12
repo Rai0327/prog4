@@ -13,27 +13,33 @@ import java.util.Set;
 
 public class TetrisTest {
     @Test
-    public void BodyNull() {
-        Piece Rahul = new TetrisPiece(null);
+    public void bodyNull() {
+        Piece piece = new TetrisPiece(null);
         for(int i = 0; i < 4; i++) {
-            assert(Rahul.getBody() == null);
-            assert(Rahul.getType() == null);
-            assert(Rahul.getRotationIndex() == 0);
-            Rahul = Rahul.clockwisePiece();
+            assert(piece.getBody() == null);
+            assert(piece.getType() == null);
+            assert(piece.getRotationIndex() == 0);
+            piece = piece.clockwisePiece();
         }
         for(int i = 0; i < 3; i++) {
-            Rahul = Rahul.counterclockwisePiece();
-            assert(Rahul.getBody() == null);
-            assert(Rahul.getType() == null);
-            assert(Rahul.getRotationIndex() == 0);
+            piece = piece.counterclockwisePiece();
+            assert(piece.getBody() == null);
+            assert(piece.getType() == null);
+            assert(piece.getRotationIndex() == 0);
         }
     }
 
 
     @Test
-    public void ClockwiseNull() {
-        TetrisPiece Rahul = new TetrisPiece(null);
-        Rahul.clockwisePiece();
+    public void clockwiseNull() {
+        TetrisPiece piece = new TetrisPiece(null);
+        piece.clockwisePiece();
+    }
+
+    @Test
+    public void counterClockwiseNull() {
+        TetrisPiece piece = new TetrisPiece(null);
+        piece.counterclockwisePiece();
     }
 
     @Test
@@ -936,9 +942,9 @@ public class TetrisTest {
     }
 
     @Test
-    public void tWallKicks() {
+    public void stickWallKicks() {
         TetrisBoard board = new TetrisBoard(50, 50);
-        TetrisPiece piece = new TetrisPiece(Piece.PieceType.RIGHT_DOG);
+        TetrisPiece piece = new TetrisPiece(Piece.PieceType.STICK);
         board.nextPiece(piece, new Point(board.getWidth() / 2, board.getHeight() / 2));
         Piece.PieceType[][] newGrid = new Piece.PieceType[board.getHeight()][board.getWidth()];
         for (int r = 0; r < newGrid.length; r++) {
@@ -946,18 +952,13 @@ public class TetrisTest {
                 newGrid[r][c] = Piece.PieceType.STICK;
             }
         }
-        for (int i = 0; i < Piece.NORMAL_CLOCKWISE_WALL_KICKS.length; i++) {
-            TetrisPiece temp = new TetrisPiece(Piece.PieceType.RIGHT_DOG);
+        for (int i = 0; i < Piece.I_CLOCKWISE_WALL_KICKS.length; i++) {
+            TetrisPiece temp = new TetrisPiece(Piece.PieceType.STICK);
             board.nextPiece(temp, new Point(board.getWidth() / 2, board.getHeight() / 2));
             while (temp.getRotationIndex() != i) {
                 board.move(Board.Action.CLOCKWISE);
             }
-            for (int j = 0; j < Piece.NORMAL_CLOCKWISE_WALL_KICKS[i].length; j++) {
-//                while (board.getCurrentPiece().getRotationIndex() != i) {
-//                    board.move(Board.Action.COUNTERCLOCKWISE);
-//                }
-//                TetrisPiece temp = new TetrisPiece(Piece.PieceType.RIGHT_DOG);
-//                board.nextPiece(temp, new Point(board.getWidth() / 2, board.getHeight() / 2));
+            for (int j = 0; j < Piece.I_CLOCKWISE_WALL_KICKS[i].length; j++) {
                 System.out.println(board.getCurrentPiecePosition() == null);
                 for (int k = 0; k < j; k++) {
                     for (Point p : board.getCurrentPiece().getBody()) {
@@ -979,8 +980,251 @@ public class TetrisTest {
                 }
             }
         }
-        for (int i = 0; i < Piece.NORMAL_CLOCKWISE_WALL_KICKS[0].length; i++) {
+    }
 
+    @Test
+    public void rightDogWallKicks() {
+        TetrisBoard board = new TetrisBoard(50, 50);
+        TetrisPiece piece = new TetrisPiece(Piece.PieceType.RIGHT_DOG);
+        board.nextPiece(piece, new Point(board.getWidth() / 2, board.getHeight() / 2));
+        Piece.PieceType[][] newGrid = new Piece.PieceType[board.getHeight()][board.getWidth()];
+        for (int r = 0; r < newGrid.length; r++) {
+            for (int c = 0; c < newGrid[0].length; c++) {
+                newGrid[r][c] = Piece.PieceType.STICK;
+            }
+        }
+        for (int i = 0; i < Piece.NORMAL_CLOCKWISE_WALL_KICKS.length; i++) {
+            TetrisPiece temp = new TetrisPiece(Piece.PieceType.RIGHT_DOG);
+            board.nextPiece(temp, new Point(board.getWidth() / 2, board.getHeight() / 2));
+            while (temp.getRotationIndex() != i) {
+                board.move(Board.Action.CLOCKWISE);
+            }
+            for (int j = 0; j < Piece.NORMAL_CLOCKWISE_WALL_KICKS[i].length; j++) {
+                System.out.println(board.getCurrentPiecePosition() == null);
+                for (int k = 0; k < j; k++) {
+                    for (Point p : board.getCurrentPiece().getBody()) {
+                        newGrid[newGrid.length - 1 - (int) (board.getCurrentPiecePosition().getY() + p.getY() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getY())][(int) (board.getCurrentPiecePosition().getX() + p.getX() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getX())] = null;
+                    }
+                }
+                board.setGridArray(newGrid);
+                if (j == 0) {
+                    assert(board.move(Board.Action.CLOCKWISE) == Board.Result.OUT_BOUNDS);
+                } else {
+                    assert(board.move(Board.Action.CLOCKWISE) == Board.Result.SUCCESS);
+                }
+                assert(board.getCurrentPiecePosition().equals(new Point((int) (board.getCurrentPiecePosition().getX() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][j].getX()), (int) (board.getCurrentPiecePosition().getY() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][j].getY()))));
+                assert(board.getCurrentPiece().getRotationIndex() == i);
+            }
+            for (int r = 0; r < newGrid.length; r++) {
+                for (int c = 0; c < newGrid[0].length; c++) {
+                    newGrid[r][c] = Piece.PieceType.STICK;
+                }
+            }
+        }
+    }
+
+    @Test
+    public void leftDogWallKicks() {
+        TetrisBoard board = new TetrisBoard(50, 50);
+        TetrisPiece piece = new TetrisPiece(Piece.PieceType.LEFT_DOG);
+        board.nextPiece(piece, new Point(board.getWidth() / 2, board.getHeight() / 2));
+        Piece.PieceType[][] newGrid = new Piece.PieceType[board.getHeight()][board.getWidth()];
+        for (int r = 0; r < newGrid.length; r++) {
+            for (int c = 0; c < newGrid[0].length; c++) {
+                newGrid[r][c] = Piece.PieceType.STICK;
+            }
+        }
+        for (int i = 0; i < Piece.NORMAL_CLOCKWISE_WALL_KICKS.length; i++) {
+            TetrisPiece temp = new TetrisPiece(Piece.PieceType.LEFT_DOG);
+            board.nextPiece(temp, new Point(board.getWidth() / 2, board.getHeight() / 2));
+            while (temp.getRotationIndex() != i) {
+                board.move(Board.Action.CLOCKWISE);
+            }
+            for (int j = 0; j < Piece.NORMAL_CLOCKWISE_WALL_KICKS[i].length; j++) {
+                System.out.println(board.getCurrentPiecePosition() == null);
+                for (int k = 0; k < j; k++) {
+                    for (Point p : board.getCurrentPiece().getBody()) {
+                        newGrid[newGrid.length - 1 - (int) (board.getCurrentPiecePosition().getY() + p.getY() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getY())][(int) (board.getCurrentPiecePosition().getX() + p.getX() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getX())] = null;
+                    }
+                }
+                board.setGridArray(newGrid);
+                if (j == 0) {
+                    assert(board.move(Board.Action.CLOCKWISE) == Board.Result.OUT_BOUNDS);
+                } else {
+                    assert(board.move(Board.Action.CLOCKWISE) == Board.Result.SUCCESS);
+                }
+                assert(board.getCurrentPiecePosition().equals(new Point((int) (board.getCurrentPiecePosition().getX() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][j].getX()), (int) (board.getCurrentPiecePosition().getY() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][j].getY()))));
+                assert(board.getCurrentPiece().getRotationIndex() == i);
+            }
+            for (int r = 0; r < newGrid.length; r++) {
+                for (int c = 0; c < newGrid[0].length; c++) {
+                    newGrid[r][c] = Piece.PieceType.STICK;
+                }
+            }
+        }
+    }
+
+    @Test
+    public void rightLWallKicks() {
+        TetrisBoard board = new TetrisBoard(50, 50);
+        TetrisPiece piece = new TetrisPiece(Piece.PieceType.RIGHT_L);
+        board.nextPiece(piece, new Point(board.getWidth() / 2, board.getHeight() / 2));
+        Piece.PieceType[][] newGrid = new Piece.PieceType[board.getHeight()][board.getWidth()];
+        for (int r = 0; r < newGrid.length; r++) {
+            for (int c = 0; c < newGrid[0].length; c++) {
+                newGrid[r][c] = Piece.PieceType.STICK;
+            }
+        }
+        for (int i = 0; i < Piece.NORMAL_CLOCKWISE_WALL_KICKS.length; i++) {
+            TetrisPiece temp = new TetrisPiece(Piece.PieceType.RIGHT_L);
+            board.nextPiece(temp, new Point(board.getWidth() / 2, board.getHeight() / 2));
+            while (temp.getRotationIndex() != i) {
+                board.move(Board.Action.CLOCKWISE);
+            }
+            for (int j = 0; j < Piece.NORMAL_CLOCKWISE_WALL_KICKS[i].length; j++) {
+                System.out.println(board.getCurrentPiecePosition() == null);
+                for (int k = 0; k < j; k++) {
+                    for (Point p : board.getCurrentPiece().getBody()) {
+                        newGrid[newGrid.length - 1 - (int) (board.getCurrentPiecePosition().getY() + p.getY() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getY())][(int) (board.getCurrentPiecePosition().getX() + p.getX() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getX())] = null;
+                    }
+                }
+                board.setGridArray(newGrid);
+                if (j == 0) {
+                    assert(board.move(Board.Action.CLOCKWISE) == Board.Result.OUT_BOUNDS);
+                } else {
+                    assert(board.move(Board.Action.CLOCKWISE) == Board.Result.SUCCESS);
+                }
+                assert(board.getCurrentPiecePosition().equals(new Point((int) (board.getCurrentPiecePosition().getX() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][j].getX()), (int) (board.getCurrentPiecePosition().getY() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][j].getY()))));
+                assert(board.getCurrentPiece().getRotationIndex() == i);
+            }
+            for (int r = 0; r < newGrid.length; r++) {
+                for (int c = 0; c < newGrid[0].length; c++) {
+                    newGrid[r][c] = Piece.PieceType.STICK;
+                }
+            }
+        }
+    }
+
+    @Test
+    public void leftLWallKicks() {
+        TetrisBoard board = new TetrisBoard(50, 50);
+        TetrisPiece piece = new TetrisPiece(Piece.PieceType.LEFT_L);
+        board.nextPiece(piece, new Point(board.getWidth() / 2, board.getHeight() / 2));
+        Piece.PieceType[][] newGrid = new Piece.PieceType[board.getHeight()][board.getWidth()];
+        for (int r = 0; r < newGrid.length; r++) {
+            for (int c = 0; c < newGrid[0].length; c++) {
+                newGrid[r][c] = Piece.PieceType.STICK;
+            }
+        }
+        for (int i = 0; i < Piece.NORMAL_CLOCKWISE_WALL_KICKS.length; i++) {
+            TetrisPiece temp = new TetrisPiece(Piece.PieceType.LEFT_L);
+            board.nextPiece(temp, new Point(board.getWidth() / 2, board.getHeight() / 2));
+            while (temp.getRotationIndex() != i) {
+                board.move(Board.Action.CLOCKWISE);
+            }
+            for (int j = 0; j < Piece.NORMAL_CLOCKWISE_WALL_KICKS[i].length; j++) {
+                System.out.println(board.getCurrentPiecePosition() == null);
+                for (int k = 0; k < j; k++) {
+                    for (Point p : board.getCurrentPiece().getBody()) {
+                        newGrid[newGrid.length - 1 - (int) (board.getCurrentPiecePosition().getY() + p.getY() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getY())][(int) (board.getCurrentPiecePosition().getX() + p.getX() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getX())] = null;
+                    }
+                }
+                board.setGridArray(newGrid);
+                if (j == 0) {
+                    assert(board.move(Board.Action.CLOCKWISE) == Board.Result.OUT_BOUNDS);
+                } else {
+                    assert(board.move(Board.Action.CLOCKWISE) == Board.Result.SUCCESS);
+                }
+                assert(board.getCurrentPiecePosition().equals(new Point((int) (board.getCurrentPiecePosition().getX() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][j].getX()), (int) (board.getCurrentPiecePosition().getY() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][j].getY()))));
+                assert(board.getCurrentPiece().getRotationIndex() == i);
+            }
+            for (int r = 0; r < newGrid.length; r++) {
+                for (int c = 0; c < newGrid[0].length; c++) {
+                    newGrid[r][c] = Piece.PieceType.STICK;
+                }
+            }
+        }
+    }
+
+    @Test
+    public void squareWallKicks() {
+        TetrisBoard board = new TetrisBoard(50, 50);
+        TetrisPiece piece = new TetrisPiece(Piece.PieceType.SQUARE);
+        board.nextPiece(piece, new Point(board.getWidth() / 2, board.getHeight() / 2));
+        Piece.PieceType[][] newGrid = new Piece.PieceType[board.getHeight()][board.getWidth()];
+        for (int r = 0; r < newGrid.length; r++) {
+            for (int c = 0; c < newGrid[0].length; c++) {
+                newGrid[r][c] = Piece.PieceType.STICK;
+            }
+        }
+        for (int i = 0; i < Piece.NORMAL_CLOCKWISE_WALL_KICKS.length; i++) {
+            TetrisPiece temp = new TetrisPiece(Piece.PieceType.SQUARE);
+            board.nextPiece(temp, new Point(board.getWidth() / 2, board.getHeight() / 2));
+            while (temp.getRotationIndex() != i) {
+                board.move(Board.Action.CLOCKWISE);
+            }
+            for (int j = 0; j < Piece.NORMAL_CLOCKWISE_WALL_KICKS[i].length; j++) {
+                System.out.println(board.getCurrentPiecePosition() == null);
+                for (int k = 0; k < j; k++) {
+                    for (Point p : board.getCurrentPiece().getBody()) {
+                        newGrid[newGrid.length - 1 - (int) (board.getCurrentPiecePosition().getY() + p.getY() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getY())][(int) (board.getCurrentPiecePosition().getX() + p.getX() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getX())] = null;
+                    }
+                }
+                board.setGridArray(newGrid);
+                if (j == 0) {
+                    assert(board.move(Board.Action.CLOCKWISE) == Board.Result.OUT_BOUNDS);
+                } else {
+                    assert(board.move(Board.Action.CLOCKWISE) == Board.Result.SUCCESS);
+                }
+                assert(board.getCurrentPiecePosition().equals(new Point((int) (board.getCurrentPiecePosition().getX() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][j].getX()), (int) (board.getCurrentPiecePosition().getY() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][j].getY()))));
+                assert(board.getCurrentPiece().getRotationIndex() == i);
+            }
+            for (int r = 0; r < newGrid.length; r++) {
+                for (int c = 0; c < newGrid[0].length; c++) {
+                    newGrid[r][c] = Piece.PieceType.STICK;
+                }
+            }
+        }
+    }
+
+    @Test
+    public void tWallKicks() {
+        TetrisBoard board = new TetrisBoard(50, 50);
+        TetrisPiece piece = new TetrisPiece(Piece.PieceType.T);
+        board.nextPiece(piece, new Point(board.getWidth() / 2, board.getHeight() / 2));
+        Piece.PieceType[][] newGrid = new Piece.PieceType[board.getHeight()][board.getWidth()];
+        for (int r = 0; r < newGrid.length; r++) {
+            for (int c = 0; c < newGrid[0].length; c++) {
+                newGrid[r][c] = Piece.PieceType.STICK;
+            }
+        }
+        for (int i = 0; i < Piece.NORMAL_CLOCKWISE_WALL_KICKS.length; i++) {
+            TetrisPiece temp = new TetrisPiece(Piece.PieceType.T);
+            board.nextPiece(temp, new Point(board.getWidth() / 2, board.getHeight() / 2));
+            while (temp.getRotationIndex() != i) {
+                board.move(Board.Action.CLOCKWISE);
+            }
+            for (int j = 0; j < Piece.NORMAL_CLOCKWISE_WALL_KICKS[i].length; j++) {
+                System.out.println(board.getCurrentPiecePosition() == null);
+                for (int k = 0; k < j; k++) {
+                    for (Point p : board.getCurrentPiece().getBody()) {
+                        newGrid[newGrid.length - 1 - (int) (board.getCurrentPiecePosition().getY() + p.getY() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getY())][(int) (board.getCurrentPiecePosition().getX() + p.getX() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getX())] = null;
+                    }
+                }
+                board.setGridArray(newGrid);
+                if (j == 0) {
+                    assert(board.move(Board.Action.CLOCKWISE) == Board.Result.OUT_BOUNDS);
+                } else {
+                    assert(board.move(Board.Action.CLOCKWISE) == Board.Result.SUCCESS);
+                }
+                assert(board.getCurrentPiecePosition().equals(new Point((int) (board.getCurrentPiecePosition().getX() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][j].getX()), (int) (board.getCurrentPiecePosition().getY() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][j].getY()))));
+                assert(board.getCurrentPiece().getRotationIndex() == i);
+            }
+            for (int r = 0; r < newGrid.length; r++) {
+                for (int c = 0; c < newGrid[0].length; c++) {
+                    newGrid[r][c] = Piece.PieceType.STICK;
+                }
+            }
         }
     }
 
@@ -1201,6 +1445,22 @@ public class TetrisTest {
     }
 
     @Test
+    public void nullTetrisPiece() {
+        TetrisPiece piece = new TetrisPiece(null);
+        assert(piece.clockwisePiece() == null);
+        assert(piece.getRotationIndex() == 0);
+    }
+
+    @Test
+    public void testRotationIdx() {
+        Piece piece = new TetrisPiece(Piece.PieceType.STICK);
+        for (int i = 0; i < 4; i++) {
+            assert(piece.getRotationIndex() == 0);
+            piece = piece.clockwisePiece();
+        }
+    }
+
+    @Test
     public void twoByTwoGrid() {
         TetrisBoard board = new TetrisBoard(2, 2);
         TetrisPiece piece = new TetrisPiece(Piece.PieceType.SQUARE);
@@ -1212,6 +1472,22 @@ public class TetrisTest {
         board.nextPiece(piece, new Point(0, 0));
         assert(board.getCurrentPiecePosition() == null);
         assert(board.getCurrentPiece() == null);
+    }
+
+    @Test
+    public void nullBrainTest() {
+        Brain brain = new JBrain();
+        assert(brain.nextMove(null) == null);
+    }
+
+    @Test
+    public void brainTest() {
+        Brain brain = new JBrain();
+        TetrisBoard board = new TetrisBoard(10, 24);
+        TetrisPiece piece = new TetrisPiece(Piece.PieceType.STICK);
+        board.nextPiece(piece, new Point(0, board.getHeight() - 4));
+        board.move(brain.nextMove(board));
+        assert(board.getLastResult() == Board.Result.SUCCESS || board.getLastResult() == Board.Result.PLACE);
     }
 
     private int getMinSkirt(Board board) {

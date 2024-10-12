@@ -188,6 +188,7 @@ public final class TetrisBoard implements Board {
                 }
             }
         }
+        // check for null pieces
         if ((currPiece == null) != (((TetrisBoard) other).getCurrentPiece() == null)) {
             return false;
         }
@@ -267,6 +268,7 @@ public final class TetrisBoard implements Board {
 
         if (collision()) {
             System.err.println("Invalid initial drop position");
+            return -1;
         }
 
         int[] currSkirt = currPiece.getSkirt();
@@ -357,6 +359,7 @@ public final class TetrisBoard implements Board {
     private Result rotate(Point[][] wallKicks, boolean clockwise) {
         int rotationIdx = currPiece.getRotationIndex();
         Point storePosition = new Point((int) position.getX(), (int) position.getY());
+        // rotate piece
         if (clockwise) {
             currPiece = currPiece.clockwisePiece();
         } else {

@@ -101,6 +101,10 @@ public final class TetrisPiece implements Piece {
     // update the instance variables to those of the rotated piece
     @Override
     public Piece clockwisePiece() {
+        if (curr == null) {
+            System.err.println("Null input");
+            return null;
+        }
         curr = curr.next;
         body = curr.getBody();
         width = curr.getWidth();
@@ -113,6 +117,10 @@ public final class TetrisPiece implements Piece {
     // update the instance variables to those of the rotated piece
     @Override
     public Piece counterclockwisePiece() {
+        if (curr == null) {
+            System.err.println("Null input");
+            return null;
+        }
         curr = curr.prev;
         body = curr.getBody();
         width = curr.getWidth();
@@ -176,6 +184,7 @@ class Node {
     Node prev;
 
     public Node(Point[] body, int width, int height, int rotationIdx) {
+        // set all the values to the params and calculate skirt based on them
         this.body = body;
         this.width = width;
         this.height = height;
