@@ -15,31 +15,22 @@ public class TetrisTest {
     @Test
     public void bodyNull() {
         Piece piece = new TetrisPiece(null);
-        for(int i = 0; i < 4; i++) {
-            assert(piece.getBody() == null);
-            assert(piece.getType() == null);
-            assert(piece.getRotationIndex() == 0);
-            piece = piece.clockwisePiece();
-        }
-        for(int i = 0; i < 3; i++) {
-            piece = piece.counterclockwisePiece();
-            assert(piece.getBody() == null);
-            assert(piece.getType() == null);
-            assert(piece.getRotationIndex() == 0);
-        }
+        assert(piece.getBody() == null);
+        assert(piece.getType() == null);
+        assert(piece.getRotationIndex() == 0);
     }
 
 
     @Test
     public void clockwiseNull() {
         TetrisPiece piece = new TetrisPiece(null);
-        piece.clockwisePiece();
+        assert(piece.clockwisePiece() == null);
     }
 
     @Test
     public void counterClockwiseNull() {
         TetrisPiece piece = new TetrisPiece(null);
-        piece.counterclockwisePiece();
+        assert(piece.counterclockwisePiece() == null);
     }
 
     @Test

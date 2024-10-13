@@ -32,13 +32,13 @@ public final class TetrisPiece implements Piece {
     private static final int numRotations = 4;
 
     public TetrisPiece(PieceType type) {
-        if (type == null) {
-            System.out.println("TetrisPiece: type is null");
-            return;
-        }
         this.type = type;
         rotationIdx = 0;
-        body = type.getSpawnBody();
+        if (type == null) {
+            body = null;
+        } else {
+            body = type.getSpawnBody();
+        }
         if (body == null) {
             System.err.println("TetrisPiece: body is null");
             return;
