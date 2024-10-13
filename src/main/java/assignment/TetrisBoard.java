@@ -210,14 +210,16 @@ public final class TetrisBoard implements Board {
         if (!(other instanceof TetrisBoard)) {
             return false;
         }
-        if (grid == null) {
-            System.err.println("Null grid");
+        // check board dimensions
+        if (getWidth() != ((TetrisBoard) other).getWidth() || getHeight() != ((TetrisBoard) other).getHeight()) {
             return false;
         }
-        if (((TetrisBoard) other).getGrid(0, 0) == null) {
-            System.err.println("Null input");
+        // check if other grid is null
+
+        if (grid == null != (((TetrisBoard) other).getHeight() == -1)) {
             return false;
         }
+
         // check if the grids are equal
         for (int r = 0; r < grid.length; r++) {
             for (int c = 0; c < grid[r].length; c++) {

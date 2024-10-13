@@ -1448,7 +1448,7 @@ public class TetrisTest {
     public void testRotationIdx() {
         Piece piece = new TetrisPiece(Piece.PieceType.STICK);
         for (int i = 0; i < 4; i++) {
-            assert(piece.getRotationIndex() == 0);
+            assert(piece.getRotationIndex() == i);
             piece = piece.clockwisePiece();
         }
     }
