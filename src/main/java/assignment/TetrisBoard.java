@@ -18,6 +18,10 @@ public final class TetrisBoard implements Board {
     private int[] rowWidths;
     private int maxHeight = 0;
     private int rowsCleared;
+    private Piece heldPiece;
+    private int lastSpawnY;
+    private boolean canHold;
+    private boolean firstHold;
 
     // JTetris will use this constructor
     public TetrisBoard(int width, int height) {
@@ -32,6 +36,8 @@ public final class TetrisBoard implements Board {
         grid = new Piece.PieceType[height][width];
         colHeights = new int[width];
         rowWidths = new int[height];
+        canHold = true;
+        firstHold = false;
     }
 
     @Override
@@ -55,7 +61,7 @@ public final class TetrisBoard implements Board {
 
         position.setLocation((int) (position.getX()), (int) (position.getY()));
         if (collision()) {
-            System.out.println("Invalid initial position");
+            System.err.println("Invalid initial position");
             return null;
         }
 
@@ -107,6 +113,32 @@ public final class TetrisBoard implements Board {
                     wallKicks = Piece.I_COUNTERCLOCKWISE_WALL_KICKS;
                 }
                 return (lastResult = rotate(wallKicks, false));
+            case HOLD:
+                if (canHold) {
+                    if (heldPiece == null) {
+                        heldPiece = currPiece;
+                        canHold = false;
+                        firstHold = true;
+                        return (lastResult = Result.NO_PIECE);
+                    }
+                    canHold = false;
+                    firstHold = true;
+                    // reset the piece so it won't stay rotated when another piece of the same type spawns
+                    while (currPiece.getRotationIndex() != 0) {
+                        if (currPiece.getRotationIndex() < 2) {
+                            currPiece = currPiece.counterclockwisePiece();
+                        } else {
+                            currPiece = currPiece.clockwisePiece();
+                        }
+                    }
+                    Piece temp = heldPiece;
+                    heldPiece = currPiece;
+                    // get X from how it's calculated in JTetris and assume spawnY is the lastSpawnY
+                    nextPiece(temp, new Point(getWidth() / 2 - temp.getWidth() / 2, lastSpawnY));
+                    return (lastResult = Result.SUCCESS);
+                } else {
+                    return (lastResult = Result.SUCCESS);
+                }
             case NOTHING:
                 // do nothing :)
                 return (lastResult = Result.SUCCESS);
@@ -158,8 +190,14 @@ public final class TetrisBoard implements Board {
             position = null;
             return;
         }
+        if (firstHold) {
+            firstHold = false;
+        } else {
+            canHold = true;
+        }
         currPiece = p;
         position = spawnPosition;
+        lastSpawnY = (int) spawnPosition.getY();
         if (collision()) {
             System.err.println("Invalid initial spawn");
             position = null;

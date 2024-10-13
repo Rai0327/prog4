@@ -99,13 +99,13 @@ public class JTetris extends JComponent {
 
     // The 7 canonical tetris pieces.
     public final Piece[] PIECES = new Piece[] {
-            new TetrisPiece(PieceType.STICK),
-            new TetrisPiece(PieceType.SQUARE),
-            new TetrisPiece(PieceType.T),
-            new TetrisPiece(PieceType.LEFT_L),
-            new TetrisPiece(PieceType.RIGHT_L),
-            new TetrisPiece(PieceType.LEFT_DOG),
-            new TetrisPiece(PieceType.RIGHT_DOG)
+        new TetrisPiece(PieceType.STICK),
+        new TetrisPiece(PieceType.SQUARE),
+        new TetrisPiece(PieceType.T),
+        new TetrisPiece(PieceType.LEFT_L),
+        new TetrisPiece(PieceType.RIGHT_L),
+        new TetrisPiece(PieceType.LEFT_DOG),
+        new TetrisPiece(PieceType.RIGHT_DOG)
     };
 
     JTetris() {
@@ -122,51 +122,51 @@ public class JTetris extends JComponent {
 
         // LEFT
         registerKeyboardAction(new ActionListener() {
-                                   public void actionPerformed(ActionEvent e) {
-                                       tick(Board.Action.LEFT);
-                                   }
-                               },
-                "left", KeyStroke.getKeyStroke('a'), WHEN_IN_FOCUSED_WINDOW);
+            public void actionPerformed(ActionEvent e) {
+                tick(Board.Action.LEFT);
+            }
+        },
+        "left", KeyStroke.getKeyStroke('a'), WHEN_IN_FOCUSED_WINDOW);
 
         // RIGHT
         registerKeyboardAction(new ActionListener() {
-                                   public void actionPerformed(ActionEvent e) {
-                                       tick(Board.Action.DOWN);
-                                   }
-                               },
-                "down", KeyStroke.getKeyStroke('s'), WHEN_IN_FOCUSED_WINDOW);
+            public void actionPerformed(ActionEvent e) {
+                tick(Board.Action.DOWN);
+            }
+        },
+        "down", KeyStroke.getKeyStroke('s'), WHEN_IN_FOCUSED_WINDOW);
 
         // DOWN
         registerKeyboardAction(new ActionListener() {
-                                   public void actionPerformed(ActionEvent e) {
-                                       tick(Board.Action.RIGHT);
-                                   }
-                               },
-                "right", KeyStroke.getKeyStroke('d'), WHEN_IN_FOCUSED_WINDOW);
+            public void actionPerformed(ActionEvent e) {
+                tick(Board.Action.RIGHT);
+            }
+        },
+        "right", KeyStroke.getKeyStroke('d'), WHEN_IN_FOCUSED_WINDOW);
 
         // ROTATE
         registerKeyboardAction(new ActionListener() {
-                                   public void actionPerformed(ActionEvent e) {
-                                       tick(Board.Action.COUNTERCLOCKWISE);
-                                   }
-                               },
-                "counterclockwise", KeyStroke.getKeyStroke('q'), WHEN_IN_FOCUSED_WINDOW);
+            public void actionPerformed(ActionEvent e) {
+                tick(Board.Action.COUNTERCLOCKWISE);
+            }
+        },
+        "counterclockwise", KeyStroke.getKeyStroke('q'), WHEN_IN_FOCUSED_WINDOW);
 
         // UNROTATE
         registerKeyboardAction(new ActionListener() {
-                                   public void actionPerformed(ActionEvent e) {
-                                       tick(Board.Action.CLOCKWISE);
-                                   }
-                               },
-                "clockwise", KeyStroke.getKeyStroke('e'), WHEN_IN_FOCUSED_WINDOW);
+            public void actionPerformed(ActionEvent e) {
+                tick(Board.Action.CLOCKWISE);
+            }
+        },
+        "clockwise", KeyStroke.getKeyStroke('e'), WHEN_IN_FOCUSED_WINDOW);
 
         // DROP
         registerKeyboardAction(new ActionListener() {
-                                   public void actionPerformed(ActionEvent e) {
-                                       tick(Board.Action.DROP);
-                                   }
-                               },
-                "drop", KeyStroke.getKeyStroke('w'), WHEN_IN_FOCUSED_WINDOW);
+            public void actionPerformed(ActionEvent e) {
+                tick(Board.Action.DROP);
+            }
+        },
+        "drop", KeyStroke.getKeyStroke('w'), WHEN_IN_FOCUSED_WINDOW);
 
         // Create the Timer object and have it send
         // tick(DOWN) periodically
@@ -225,7 +225,9 @@ public class JTetris extends JComponent {
      * Selects the next piece to use using the random generator
      * set in startGame().
      */
-    public Piece pickNextPiece() { return PIECES[random.nextInt(PIECES.length)]; }
+    public Piece pickNextPiece() {
+        return PIECES[random.nextInt(PIECES.length)];
+    }
 
     /**
      * Adds a new random piece to the board.
@@ -255,19 +257,19 @@ public class JTetris extends JComponent {
 
         Board.Result result = board.move(verb);
         switch (result) {
-            case SUCCESS:
-            case OUT_BOUNDS:
-                // The board is responsible for staying in a good state
-                break;
-            case PLACE:
-                if (board.getMaxHeight() > HEIGHT) {
-                    stopGame();
-                }
-            case NO_PIECE:
-                if (gameOn) {
-                    addNewPiece();
-                }
-                break;
+          case SUCCESS:
+          case OUT_BOUNDS:
+            // The board is responsible for staying in a good state
+            break;
+          case PLACE:
+              if (board.getMaxHeight() > HEIGHT) {
+                  stopGame();
+              }
+          case NO_PIECE:
+              if (gameOn) {
+                  addNewPiece();
+              }
+            break;
         }
 
         repaint();
@@ -357,17 +359,13 @@ public class JTetris extends JComponent {
             // draw from 0 up to the col height
             for (int y = 0; y < bHeight; y++) {
                 Piece.PieceType pieceType = board.getGrid(x, y);
-
+                
                 // Special case if this position is part of the currently active piece.
                 if(currentPiecePositions.contains(new Point(x, y))) pieceType = currentPiece.getType();
 
                 if (pieceType != null) {
                     // +1 to leave a white border
                     g.setColor(pieceType.getColor());
-                    g.fillRect(left + 1, yPixel(y) + 1, dx, dy);
-                }
-                else{
-                    g.setColor(new Color(220, 220, 220));
                     g.fillRect(left + 1, yPixel(y) + 1, dx, dy);
                 }
             }

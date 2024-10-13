@@ -959,7 +959,6 @@ public class TetrisTest {
                 board.move(Board.Action.CLOCKWISE);
             }
             for (int j = 0; j < Piece.I_CLOCKWISE_WALL_KICKS[i].length; j++) {
-                System.out.println(board.getCurrentPiecePosition() == null);
                 for (int k = 0; k < j; k++) {
                     for (Point p : board.getCurrentPiece().getBody()) {
                         newGrid[newGrid.length - 1 - (int) (board.getCurrentPiecePosition().getY() + p.getY() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getY())][(int) (board.getCurrentPiecePosition().getX() + p.getX() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getX())] = null;
@@ -1000,7 +999,6 @@ public class TetrisTest {
                 board.move(Board.Action.CLOCKWISE);
             }
             for (int j = 0; j < Piece.NORMAL_CLOCKWISE_WALL_KICKS[i].length; j++) {
-                System.out.println(board.getCurrentPiecePosition() == null);
                 for (int k = 0; k < j; k++) {
                     for (Point p : board.getCurrentPiece().getBody()) {
                         newGrid[newGrid.length - 1 - (int) (board.getCurrentPiecePosition().getY() + p.getY() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getY())][(int) (board.getCurrentPiecePosition().getX() + p.getX() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getX())] = null;
@@ -1041,7 +1039,6 @@ public class TetrisTest {
                 board.move(Board.Action.CLOCKWISE);
             }
             for (int j = 0; j < Piece.NORMAL_CLOCKWISE_WALL_KICKS[i].length; j++) {
-                System.out.println(board.getCurrentPiecePosition() == null);
                 for (int k = 0; k < j; k++) {
                     for (Point p : board.getCurrentPiece().getBody()) {
                         newGrid[newGrid.length - 1 - (int) (board.getCurrentPiecePosition().getY() + p.getY() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getY())][(int) (board.getCurrentPiecePosition().getX() + p.getX() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getX())] = null;
@@ -1082,7 +1079,6 @@ public class TetrisTest {
                 board.move(Board.Action.CLOCKWISE);
             }
             for (int j = 0; j < Piece.NORMAL_CLOCKWISE_WALL_KICKS[i].length; j++) {
-                System.out.println(board.getCurrentPiecePosition() == null);
                 for (int k = 0; k < j; k++) {
                     for (Point p : board.getCurrentPiece().getBody()) {
                         newGrid[newGrid.length - 1 - (int) (board.getCurrentPiecePosition().getY() + p.getY() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getY())][(int) (board.getCurrentPiecePosition().getX() + p.getX() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getX())] = null;
@@ -1123,7 +1119,6 @@ public class TetrisTest {
                 board.move(Board.Action.CLOCKWISE);
             }
             for (int j = 0; j < Piece.NORMAL_CLOCKWISE_WALL_KICKS[i].length; j++) {
-                System.out.println(board.getCurrentPiecePosition() == null);
                 for (int k = 0; k < j; k++) {
                     for (Point p : board.getCurrentPiece().getBody()) {
                         newGrid[newGrid.length - 1 - (int) (board.getCurrentPiecePosition().getY() + p.getY() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getY())][(int) (board.getCurrentPiecePosition().getX() + p.getX() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getX())] = null;
@@ -1164,7 +1159,6 @@ public class TetrisTest {
                 board.move(Board.Action.CLOCKWISE);
             }
             for (int j = 0; j < Piece.NORMAL_CLOCKWISE_WALL_KICKS[i].length; j++) {
-                System.out.println(board.getCurrentPiecePosition() == null);
                 for (int k = 0; k < j; k++) {
                     for (Point p : board.getCurrentPiece().getBody()) {
                         newGrid[newGrid.length - 1 - (int) (board.getCurrentPiecePosition().getY() + p.getY() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getY())][(int) (board.getCurrentPiecePosition().getX() + p.getX() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getX())] = null;
@@ -1205,7 +1199,6 @@ public class TetrisTest {
                 board.move(Board.Action.CLOCKWISE);
             }
             for (int j = 0; j < Piece.NORMAL_CLOCKWISE_WALL_KICKS[i].length; j++) {
-                System.out.println(board.getCurrentPiecePosition() == null);
                 for (int k = 0; k < j; k++) {
                     for (Point p : board.getCurrentPiece().getBody()) {
                         newGrid[newGrid.length - 1 - (int) (board.getCurrentPiecePosition().getY() + p.getY() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getY())][(int) (board.getCurrentPiecePosition().getX() + p.getX() + Piece.NORMAL_CLOCKWISE_WALL_KICKS[i][k].getX())] = null;
